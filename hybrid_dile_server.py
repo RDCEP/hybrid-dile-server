@@ -12,7 +12,20 @@ from datetime import datetime
 from pymongo  import MongoClient
 from flask import Flask, request, session, url_for, redirect, jsonify,\
      render_template, abort, g, flash, _app_ctx_stack
+from flask import abort
+
 from functools import wraps
+from boto.s3.connection import S3Connection
+from boto.s3.connection import Location
+
+AWS_ACCESS_KEY_ID=""
+AWS_SECRET_ACCESS_KEY=""
+with open('/home/ubuntu/.s3/AWS_ACCESS_KEY_ID', 'r') as myfile:
+  AWS_ACCESS_KEY_ID=myfile.read().replace('\n', '')
+
+with open('/home/ubuntu/.s3/AWS_SECRET_ACCESS_KEY', 'r') as myfile:
+  AWS_SECRET_ACCESS_KEY=myfile.read().replace('\n', '')
+
 
 def jsonp(func):
     """ Wrap json as jsonp """
@@ -112,7 +125,7 @@ def index():
                         line=line.replace(":example:","").strip()
                         action['example']=request.host+line
                     elif line.startswith(":param"):
-                        line=line.replace(":param","").strip()
+                        line=line.replace(":param:","").strip()
                         name=line.split(":")[0]
                         desc=line.split(":")[1]
                         action['params'].append({"name":name,"desc":desc})
@@ -131,10 +144,13 @@ def index():
 @jsonp
 def discovery_dile_by_position(lon,lat):
     """Discovery the diles given a lon/lat position.
+    :param: time: time costraits
+    :param: level: level costrains
+    :param: vars: variables contraints
 
     :example: /discovery/dile/by/position/14.28/40.55
 
-    :returns:  json -- the return geojson.
+    :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
     """
@@ -146,9 +162,13 @@ def discovery_dile_by_position(lon,lat):
 def discovery_dile_by_range(lon,lat,radius):
     """Discovery the diles given a center point by lon/lat and a radius in km.
 
+    :param: time: time costraits
+    :param: level: level costrains
+    :param: vars: variables contraints
+
     :example: /discovery/dile/by/position/14.25/40.25/25.0
 
-    :returns:  json -- the return geojson.
+    :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
     """
@@ -160,12 +180,20 @@ def discovery_dile_by_range(lon,lat,radius):
 def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     """Discovery the diles given a bounding box.
 
+    :param: time: time costraits
+    :param: level: level costrains
+    :param: vars: variables contraints
+
     :example: /discovery/dile/by/bbox/13.0/40.0/15.0/41.0
 
-    :returns:  json -- the return geojson.
+    :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
     """
+    time=request.args.get('time')
+    level=request.args.get('level')
+    vars=request.args.get('vars')
+    
     query= {
     "loc.geometry": {
         "$geoIntersects": {
@@ -216,3 +244,30 @@ def query_db(query):
     }
 
     return result
+
+@app.route('/select/dile')
+@jsonp
+def select_dile_by_uri():
+    """Download a dile given a uri.
+
+    :example: /select/dile?uri=s3:///sadiles/results/009fe65264b158898f16e991f28223d2/tmin/0/0/2/0/0
+
+    :returns:  netcdf4 -- the return the dile.
+    -------------------------------------------------------------------------------------------
+
+    """
+    uri=request.args.get('uri')
+    if uri is not None:
+        if uri.startswith("s3://"):
+            uri=uri.replace("s3://","")
+            conn = S3Connection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+            try:
+                mybucket = conn.get_bucket(uri)
+                response = make_response(bucket)
+                response.headers['Content-Type'] = 'application/x-netcdf'
+                response.headers['Content-Disposition'] = 'attachment; filename=dile.nc4'
+                return response
+            except:
+                pass
+        abort(404)
+    abort(400)
