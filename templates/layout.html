@@ -1,0 +1,14 @@
+<!doctype html>
+<title>{% block title %}Welcome{% endblock %} | HybridDileServer</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+<div class="page">
+  <h1>HybridDileServer</h1>
+  <div class="navigation">
+  </div>
+  <div class="body">
+  {% block body %}{% endblock %}
+  </div>
+  <div class="footer">
+    HybridDileServer &mdash; A Flask Application
+  </div>
+</div>
