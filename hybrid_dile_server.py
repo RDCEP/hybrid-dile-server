@@ -189,7 +189,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
 def query_db(query):
     features=[]
     db = get_db()
-    diles = db['netcdf'].find(query)
+    diles = db[app.config['COLLECTION']].find(query)
     for dile in diles:
         feature={
             "geometry": {
