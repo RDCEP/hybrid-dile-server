@@ -5,6 +5,11 @@
   <h1>HybridDileServer</h1>
   <div class="navigation">
   </div>
+  <ul class="flashes">
+      {% for action in actions %}
+        <li><em>{{ action['title'] }}</em><br/><a href="http://{{ action['example'] }}" target="_new">{{ action['example'] }}</a>
+      {% endfor %}
+      </ul>
   <div class="body">
   {% block body %}{% endblock %}
   </div>
