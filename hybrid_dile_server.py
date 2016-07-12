@@ -6,21 +6,28 @@
     :copyright: (c) 2016 by Raffaele Montella.
     :license: Apache 2.0, see LICENSE for more details.
 """
-
-import time
-import os
+import json, sys, re, urllib, urllib2, socket, json, pydoc, cgi, os, time, inspect
 from hashlib import md5
 from datetime import datetime
 from pymongo  import MongoClient
 from flask import Flask, request, session, url_for, redirect, jsonify,\
      render_template, abort, g, flash, _app_ctx_stack
+from functools import wraps
 
+def jsonp(func):
+    """ Wrap json as jsonp """
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        callback = request.args.get('callback', False)
+        if callback:
+            data = str(func(*args, **kwargs).data)
+            content = str(callback) + '(' + data + ')'
+            mimetype = 'application/javascript'
+            return current_app.response_class(content, mimetype=mimetype)
+        else:
+            return func(*args, **kwargs)
+    return decorated_function
 
-# configuration
-DATABASE = ''
-PER_PAGE = 30
-DEBUG = True
-SECRET_KEY = 'development key'
 
 # create our little application :)
 app = Flask(__name__)
@@ -73,21 +80,92 @@ def initdb_command():
 def index():
     """Shows the home page
     """
-    return render_template('layout.html')
+    actions=[]
+    my_path=os.path.abspath(inspect.getfile(inspect.currentframe()))
+    print "my_path:"+my_path
+    with open(my_path) as f:
+        add=False
+        action=None
+        for line in f:
+            line=line.lstrip()
+            if line.startswith("@app."):
+                line=line.replace("@app.","").replace("'",'"').replace("\n","")
+                method=None
+                if line.startswith("route"):
+                    method="get"
+                    path=re.findall(r'"([^"]*)"', line)[0]
+                    if path != '/':
+                        action={"method":method,"url":cgi.escape(path),"params":[]}
+            elif line.startswith('"""') and action is not None:
+                if add is False:
+                    add=True
+                    action['title']=line.replace('"""','').strip()
+                else:
+                    add=False
+                    actions.append(action)
+                    action=None
+            elif line.startswith("@jsonp"):
+                action['jsonp']=True
+            else:
+                if add is True:
+                    if ":example:" in line:
+                        line=line.replace(":example:","").strip()
+                        action['example']=request.host+line
+                    elif line.startswith(":param"):
+                        line=line.replace(":param","").strip()
+                        name=line.split(":")[0]
+                        desc=line.split(":")[1]
+                        action['params'].append({"name":name,"desc":desc})
+                    elif line.startswith(":returns:"):
+                        line=line.replace(":returns:","").strip()
+                        action['returns']=line
+                    else:
+                        pass
+    return render_template('layout.html',actions=actions)
 
+"""
+-------------------------------------------------------------------------------------------
+"""
 
 @app.route('/discovery/dile/by/position/<float:lon>/<float:lat>')
+@jsonp
 def discovery_dile_by_position(lon,lat):
+    """Discovery the diles given a lon/lat position.
+
+    :example: /discovery/dile/by/position/14.28/40.55
+
+    :returns:  json -- the return geojson.
+    -------------------------------------------------------------------------------------------
+
+    """
     query={}
     return jsonify(query_db(query))
 
 @app.route('/discovery/dile/by/radius/<float:lon>/<float:lat>/<float:radius>')
+@jsonp
 def discovery_dile_by_range(lon,lat,radius):
+    """Discovery the diles given a center point by lon/lat and a radius in km.
+
+    :example: /discovery/dile/by/position/14.25/40.25/25.0
+
+    :returns:  json -- the return geojson.
+    -------------------------------------------------------------------------------------------
+
+    """
     query={}
     return jsonify(query_db(query))
 
 @app.route('/discovery/dile/by/bbox/<float:minLon>/<float:minLat>/<float:maxLon>/<float:maxLat>')
+@jsonp
 def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
+    """Discovery the diles given a bounding box.
+
+    :example: /discovery/dile/by/bbox/13.0/40.0/15.0/41.0
+
+    :returns:  json -- the return geojson.
+    -------------------------------------------------------------------------------------------
+
+    """
     query= {
     "loc.geometry": {
         "$geoIntersects": {
