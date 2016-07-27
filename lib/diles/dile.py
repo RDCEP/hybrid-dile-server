@@ -1,16 +1,40 @@
 from numpy import floor
+from geojson import Polygon, Feature, Point, FeatureCollection
+from netCDF4 import Dataset
+import os
+
+class DileFactory(object):
+
+    # Returns one or more diles as a list given a bounding box
+    # If zoom is not specified all diles of all zoomlevels are returned
+    # If zoom is a range, returns all the zoomlevels in the range
+    # If zoom is just one, returns one dile at the required zoomlevel
+    @staticmethod
+    def fromBoundingBox(lon_min, lat_min, lon_max, lat_max,zoom=None):
+        pass
+
+    # Returns one or more diles as a list given a point
+    # If zoom is not specified all diles of all zoomlevels are returned
+    # If zoom is a range, returns all the zoomlevels in the range
+    # If zoom is just one, returns one dile at the required zoomlevel
+    @staticmethod
+    def fromPoint(lon,lat,zoom=None):
+        pass
 
 
-class Dile(object):
+class DileGeometry(object):
+    MAX_Z=10
+    XSIZE=361
+    YSIZE=181
 
     def __init__(self,z=0,x=0,y=0):
         self.z=z
         self.x=x
         self.y=y
-        self.xSize=361
-        self.ySize=181
+        self.xSize=Dile.XSIZE
+        self.ySize=Dile.YSIZE
 
-    def asBoundigBox(self):
+    def asBoundingBox(self):
         bb=None
         sigma = 2**self.z
 
@@ -33,6 +57,10 @@ class Dile(object):
             }
 
         return bb
+
+    def asPolygon(self):
+        bb=self.asBoundingBox()
+        return Polygon([[(bb['lon_min'], bb['lat_min']), (bb['lon_min'], bb['lat_max']), (bb['lon_max'], bb['lat_max']), (bb['lon_max'], bb['lat_min']),(bb['lon_min'], bb['lat_min'])]])
 
     def byZoomLonLat(self,zoom,lon,lat):
         x=0
@@ -66,11 +94,33 @@ class Dile(object):
         self.x=int(x)
         self.y=int(y)
 
+class Dile(DileGeometry):
+    def __init__(self):
+       self.uri=None   
+       self.dimensions=None
+       self.variable=None
+       self.attributes=None
+
+    # create an empty netcdf4 matching the dile
+    def createNetCDF4(self):
+       dirname="/tmp/"+str(self.z)+"/"+str(self.x)+"/"+str(self.y)+"/"
+       os.makedirs(dirname)
+       filename=dirname+str(self.z)+"_"+str(self.x)+"_"+str(self.y)+".nc"
+       rootgrp = Dataset(filename, "w", format="NETCDF4")
+       # add dimensions
+       # add variables
+       # add attributes
+       return filename
+
 if __name__ == "__main__":
     dile=Dile()
     dile.byZoomLonLat(8,14.28,40.85)
     print dile.z
     print dile.x
     print dile.y
-    bb=dile.asBoundigBox()
+    bb=dile.asBoundingBox()
     print str(bb)
+    feature=Feature(geometry=dile.asPolygon())
+    feature_collection=FeatureCollection([feature])
+    print str(feature_collection)
+    print dile.createNetCDF4();
