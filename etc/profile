@@ -1,4 +1,4 @@
 #! /bin/bash
-export HYBRID_DILE_SERVER_HOME=$USER/dev/hybrid-dile-server
+export HYBRID_DILE_SERVER_HOME=$HOME/dev/hybrid-dile-server
 export FLASK_APP=hybrid_dile_server
-export PYTHONPATH=$HYBRID_DILE_SERVER_HOME:$PYTHONPATH
+export PYTHONPATH=$HYBRID_DILE_SERVER_HOME/lib:$PYTHONPATH
