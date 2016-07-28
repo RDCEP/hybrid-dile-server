@@ -4,3 +4,5 @@ The Hybrid Dile Server (HDS) is the main software component of a novel data dist
 1. Clone the repository matching the requirements.
 2. Be sure that etc/profile is consistent and source it
 3. ./bin/hds-start to run. CTRL+C to stop.
+
+Sergio Apreda, Raffaele Montella
