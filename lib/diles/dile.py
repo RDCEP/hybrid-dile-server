@@ -1,7 +1,9 @@
+import numpy
 from numpy import floor
 from geojson import Polygon, Feature, Point, FeatureCollection
 from netCDF4 import Dataset
 import os
+import pprint
 
 class DileFactory(object):
 
@@ -94,6 +96,15 @@ class DileGeometry(object):
         self.x=int(x)
         self.y=int(y)
 
+    def asDocument(self):
+        document= {
+            "loc":Feature(geometry=self.asPolygon()),
+            "z":self.z,
+            "x":self.x,
+            "y":self.y
+        } 
+        return document
+
 class Dile(DileGeometry):
     def __init__(self):
        self.uri=None   
@@ -101,14 +112,36 @@ class Dile(DileGeometry):
        self.variable=None
        self.attributes=None
 
+    def asDocument(self):
+       document=super(Dile, self).asDocument()
+       if self.uri is not None:
+           document['uri']=self.uri
+       return document
+
     # create an empty netcdf4 matching the dile
     def createNetCDF4(self):
        dirname="/tmp/"+str(self.z)+"/"+str(self.x)+"/"+str(self.y)+"/"
-       os.makedirs(dirname)
+       try:
+           os.makedirs(dirname)
+       except:
+           pass
        filename=dirname+str(self.z)+"_"+str(self.x)+"_"+str(self.y)+".nc"
        rootgrp = Dataset(filename, "w", format="NETCDF4")
        # add dimensions
+       lat = rootgrp.createDimension("lat", DileGeometry.YSIZE)
+       lon = rootgrp.createDimension("lon", DileGeometry.XSIZE)
        # add variables
+       latitudes = rootgrp.createVariable("latitude","f4",("lat",))
+       longitudes = rootgrp.createVariable("longitude","f4",("lon",))
+       data = rootgrp.createVariable("data","f4",("lat","lon",))
+       sigma = 2**self.z
+       delta_lat = 180/float(sigma)
+       delta_lon = 360/float(sigma)
+       bb=self.asBoundingBox()
+       lats =  numpy.arange(bb['lat_min'],bb['lat_max']-delta_lat,delta_lat)
+       lons =  numpy.arange(bb['lon_min'],bb['lon_max']-delta_lon,delta_lon)
+       latitudes[:] = lats
+       longitudes[:] = lons
        # add attributes
        return filename
 
@@ -124,3 +157,5 @@ if __name__ == "__main__":
     feature_collection=FeatureCollection([feature])
     print str(feature_collection)
     print dile.createNetCDF4();
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(dile.asDocument())
