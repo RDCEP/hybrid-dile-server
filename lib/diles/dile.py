@@ -1,18 +1,20 @@
 import numpy
 import os
 import pprint
+
 from netCDF4 import Dataset
 from dilegeometry import dilegeometry
 
 
-class Dile(dilegeometry):
+class dile(dilegeometry):
 	
-	def __init__(self):
+	def __init__(self,z=0,x=0,y=0):
 	   
 		self.uri = None
 		self.dimensions = None
 		self.variable = None
 		self.attributes = None
+		super(dile, self).__init__(z,x,y)
 
 	
 	def asDocument(self):
@@ -70,9 +72,12 @@ class Dile(dilegeometry):
 
 
 if __name__ == "__main__":
-	dile=Dile()
+
+	dile=dile()
 	dile.byZoomLonLat(8,14.28,40.85)
 	print dile.z
 	print dile.x
 	print dile.y
 	bb=dile.asBoundingBox()
+
+	print bb
