@@ -4,7 +4,6 @@ from geojson import Polygon, Feature, Point, FeatureCollection
 
 class dilegeometry(object):
 	
-	MAX_Z=10
 	XSIZE=361
 	YSIZE=181
 
@@ -13,8 +12,8 @@ class dilegeometry(object):
 		self.z = z
 		self.x = x
 		self.y = y
-		self.xSize = Dile.XSIZE
-		self.ySize = Dile.YSIZE
+		self.xSize = dilegeometry.XSIZE
+		self.ySize = dilegeometry.YSIZE
 
 
 	def asBoundingBox(self):
@@ -56,13 +55,18 @@ class dilegeometry(object):
 						]])
 
 	
+	def byZXY(self,z,x,y):
+		
+		self.z = z
+		self.x = x
+		self.y = y
+	
+	
 	def byZoomLonLat(self,zoom,lon,lat):
 		
-		x=0
-		y=0
+		x=y=0
 		
 		try:
-
 			# 1/sigma is the distance between each lat/lon datum at a certain lvl
 			sigma   = 2**zoom
 
@@ -75,16 +79,15 @@ class dilegeometry(object):
 			x = floor( (lon + 180)/float(dlon)  )
 			y = floor( (lat - 90 )/float(-dlat) )
 
-
-		except TypeError:
-		
+		except TypeError,te:	
 			print "wrong format provided for either x and/or y"
 		
 		else:
-
 			self.z=zoom
 			self.x=int(x)
 			self.y=int(y)
+
+			return self.y, self.x
 
 	
 	def asDocument(self):
