@@ -66,6 +66,8 @@ class dile(dilegeometry):
 		add attributes here
 		'''
 
+		rootgrp.close()
+
 		return filename
 
 
