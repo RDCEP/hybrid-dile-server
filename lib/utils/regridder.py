@@ -1,6 +1,6 @@
 from fabric.api				import run,local
-from diles.dilegeometry import DileGeometry
-from gridfile				import gridfile
+from dilegeometry 			import DileGeometry
+from gridfile				import GridFile
 from netCDF4				import Dataset
 
 class Regridder(object):
