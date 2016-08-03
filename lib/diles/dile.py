@@ -3,10 +3,9 @@ import os
 import pprint
 
 from netCDF4 import Dataset
-from dilegeometry import dilegeometry
+from dilegeometry import DileGeometry
 
-
-class dile(dilegeometry):
+class Dile(DileGeometry):
 	
 	def __init__(self,z=0,x=0,y=0):
 	   
@@ -14,7 +13,7 @@ class dile(dilegeometry):
 		self.dimensions = None
 		self.variable = None
 		self.attributes = None
-		super(dile, self).__init__(z,x,y)
+		super(Dile, self).__init__(z,x,y)
 
 	
 	def asDocument(self):
