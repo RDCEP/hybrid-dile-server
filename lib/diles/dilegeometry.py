@@ -2,7 +2,7 @@
 from numpy import floor
 from geojson import Polygon, Feature, Point, FeatureCollection
 
-class dilegeometry(object):
+class DileGeometry(object):
 	
 	XSIZE=361
 	YSIZE=181
@@ -12,8 +12,8 @@ class dilegeometry(object):
 		self.z = z
 		self.x = x
 		self.y = y
-		self.xSize = dilegeometry.XSIZE
-		self.ySize = dilegeometry.YSIZE
+		self.xSize = DileGeometry.XSIZE
+		self.ySize = DileGeometry.YSIZE
 
 
 	def asBoundingBox(self):
