@@ -1,5 +1,5 @@
-from unitinspector	import unitinspector
-from netcdfcopier 	import netcdfcopier
+from unitinspector	import UnitInspector
+from netcdfcopier 	import NetcdfCopier
 from netCDF4 import *
 
 class standardizer(object):
