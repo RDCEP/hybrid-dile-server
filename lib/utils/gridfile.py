@@ -1,4 +1,5 @@
-class gridfile(object):
+
+class GridFile(object):
 	"""file rapresenting the interpolation grid for CDO"""
 	
 	def __init__(self, gridtype, xsize, ysize, xfirst, xinc, yfirst, yinc):
