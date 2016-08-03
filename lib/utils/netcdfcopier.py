@@ -1,6 +1,6 @@
 from netCDF4 import *
 
-class netcdfcopier(object):
+class NetcdfCopier(object):
 	"""create a copy of the netcdf, can exclude certain variables and/or dimensions"""
 
 	# vbl : variables black list
