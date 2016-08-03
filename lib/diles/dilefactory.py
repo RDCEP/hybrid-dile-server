@@ -1,4 +1,4 @@
-from dile   import dile
+from dile   import Dile
 from pprint import pprint
 from numpy  import array, floor
 
@@ -33,10 +33,10 @@ def fromSubTree(d, sublevels, vec):
 
 		# with the said property, calculating the 4
 		# children becomes a trivial task
-		no = dile(d.z+1, d.x*2, d.y*2) 
-		ne = dile(d.z+1, no.x, no.y+1)
-		so = dile(d.z+1, no.x+1, no.y)
-		se = dile(d.z+1, no.x+1, no.y+1)
+		no = Dile(d.z+1, d.x*2, d.y*2) 
+		ne = Dile(d.z+1, no.x, no.y+1)
+		so = Dile(d.z+1, no.x+1, no.y)
+		se = Dile(d.z+1, no.x+1, no.y+1)
 
 		children = [no,ne,so,se]
 		vec.extend(children)
@@ -50,7 +50,7 @@ def fromSubTree(d, sublevels, vec):
 
 
 	
-class dilefactory(object):
+class DileFactory(object):
 
 	MAX_ZOOM = 24 # Currently (2016) google maps has a maximum zoom-level of 23
 				  # precision at max zoom: 1/(16'777'216) degrees
@@ -70,7 +70,7 @@ class dilefactory(object):
 		except TypeError, te:
 
 			if zoom is None:
-				zoom = range(0,dilefactory.MAX_ZOOM)
+				zoom = range(0,DileFactory.MAX_ZOOM)
 			else:
 				zoom = [zoom]
 
@@ -83,8 +83,8 @@ class dilefactory(object):
 		lon_min += 1e-12
 		lon_max -= 1e-12
 
-		min_dile = dile()
-		max_dile = dile()
+		min_dile = Dile()
+		max_dile = Dile()
 
 		for z in zoom:
 
@@ -97,7 +97,7 @@ class dilefactory(object):
 			#in regard of the lat/lon tile model
 			for i in range(int(x_min),int(x_max+1)):
 					for j in range(int(y_min),int(y_max+1)):
-						vec.append(dile(z,i,j))
+						vec.append(Dile(z,i,j))
 
 		return vec	
 
@@ -115,7 +115,7 @@ class dilefactory(object):
 		except TypeError, te:
 			
 			if zoom is None:
-				zoom = range(0,dilefactory.MAX_ZOOM)
+				zoom = range(0,DileFactory.MAX_ZOOM)
 			else:
 				zoom = [zoom]
 
@@ -123,7 +123,7 @@ class dilefactory(object):
 
 		for z in zoom:
 
-			d = dile()
+			d = Dile()
 			d.byZoomLonLat(z, lon, lat)
 			vec.append(d)
 
@@ -144,9 +144,9 @@ class dilefactory(object):
 
 if __name__ == "__main__":
 
-	fac = dilefactory()
+	fac = DileFactory()
 
-	d = dile(0,0,0)
+	d = Dile(0,0,0)
 
 	v1 = fac.fromBoundingBox(-180,-90,180,90,1)
 
