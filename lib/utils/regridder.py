@@ -1,9 +1,9 @@
 from fabric.api				import run,local
-from ..diles.dilegeometry	import dilegeometry
+from diles.dilegeometry import DileGeometry
 from gridfile				import gridfile
 from netCDF4				import Dataset
 
-class regridder(object):
+class Regridder(object):
 	
 	"""
 	Class that regrids a netcdf file generic latlon grid into
@@ -25,8 +25,8 @@ class regridder(object):
 
 
 		
-		min_dile = dilegeometry()
-		max_dile = dilegeometry()
+		min_dile = DileGeometry()
+		max_dile = DileGeometry()
 
 		#assuming the vectors are ordered
 		lon_min = src.variables["lon"][0]
@@ -55,5 +55,5 @@ class regridder(object):
 
 if __name__ == '__main__':
 	
-	r = regridder("../../rawnc/", " ", 2)
+	r = Regridder("../../rawnc/", " ", 2)
 	r.gridInit()
