@@ -1,3 +1,4 @@
 flask
 netcdf4
 geojson
+fabric
