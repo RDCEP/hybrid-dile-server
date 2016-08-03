@@ -1,5 +1,5 @@
 from fabric.api				import run,local
-from dilegeometry 			import DileGeometry
+from ..dilegeometry 		import DileGeometry
 from gridfile				import GridFile
 from netCDF4				import Dataset
 
