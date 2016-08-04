@@ -52,7 +52,7 @@ class standardizer(object):
 #	main function
 	def createNetcdf(self):
 
-		ncp  = netcdfcopier()
+		ncp  = NetcdfCopier()
 
 		self.__netcdfOpen(self.__srcpath,self.__file,self.__mode)
 		
@@ -127,12 +127,12 @@ class standardizer(object):
 					else:
 						self.__blacklist.append(var.name)	# if the dimension is not among lat/lon/time/lev
 			else:
-				self.__blacklist.append(dimension.name)			# if the dimension is has not a variable describing it
+				self.__blacklist.append(dimension.name)		# if the dimension is has not a variable describing it
 		
 		return lat and lon
 
 
 if __name__ == '__main__':
 	
-	std = standardizer("../../rawnc/", "../../testednc/", "test_echam_spectral.nc")
-	std.start()
+	std = standardizer("../../rawnc/", "../../testednc/", "AgMERRA_2010_tavg.nc")
+	std.createNetcdf()
