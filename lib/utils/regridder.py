@@ -1,5 +1,5 @@
 from fabric.api				import run,local
-from ..dilegeometry 		import DileGeometry
+from diles.dilegeometry		import DileGeometry
 from gridfile				import GridFile
 from netCDF4				import Dataset
 
@@ -16,23 +16,36 @@ class Regridder(object):
 		self.dst = dst
 		self.z   = z
 
+	# try to set the range of lat/lon properly
+	# if the values are in the range lat->[0:90], lon->[0:180]
+	# the result is ambiguous
+	def __checkRange(self,source):
+		if max(source.variables["lon"]) > 180:
+			source.variables["lon"][:] -= 180
+		if max(source.variables["lat"]) > 90:
+			source.variables["lat"][:] -= 90
+	
 	def gridInit(self): 
 
 		try:
-			src = Dataset(self.src,"w")
+			src = Dataset(self.src,"a")
 		except:
 			print "couldn't open ", self.src
 
 
-		
 		min_dile = DileGeometry()
 		max_dile = DileGeometry()
 
+		print src.variables["lon"][0]
+
+		self.__checkRange(src)
+
 		#assuming the vectors are ordered
-		lon_min = src.variables["lon"][0]
-		lon_max = src.variables["lon"][-1]
-		lat_min = src.variables["lat"][0]
-		lat_max = src.variables["lat"][-1]
+		lon_min = min(src.variables["lon"])
+		lon_max = max(src.variables["lon"])
+		lat_min = min(src.variables["lat"])
+		lat_max = max(src.variables["lat"])
+
 
 		#converting bb into tiles delimiters
 		y_max,x_min = min_dile.byZoomLonLat(self.z,lon_min,lat_min)
@@ -40,20 +53,22 @@ class Regridder(object):
 
 		bb_min = min_dile.asBoundingBox()
 
-		increment = 1/float(2**z)
+		increment = 1/float(2**self.z)
 
-		xsize	= (x_max - x_min)*361
-		ysize	= (y_max - y_min)*181
+		# xsize/ysize calculated as the indices distance
+		# adding +1 to consider the lower bound
+		xsize	= (x_max - x_min + 1)*min_dile.XSIZE #max_dile would be good as well
+		ysize	= (y_max - y_min + 1)*min_dile.YSIZE
 		xfirst	= bb_min["lon_min"]
 		yfirst	= bb_min["lat_min"]
 		xinc   	= increment
-		xync	= increment
+		yinc	= increment
 
-		gf = gridfile("lonlat", xsize, ysize, xfirst, xinc, yfirst, yinc)
+		gf = GridFile("lonlat", xsize, ysize, xfirst, xinc, yfirst, yinc)
 		gf.createGrid("")
 
 
 if __name__ == '__main__':
 	
-	r = Regridder("../../rawnc/", " ", 2)
+	r = Regridder("../testednc/AgMERRA_2010_tavg.nc", " ", 2)
 	r.gridInit()
