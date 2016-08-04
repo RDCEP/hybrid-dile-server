@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
 	d = Dile(0,0,0)
 
-	v1 = fac.fromBoundingBox(-180,-90,180,90,1)
+	v1 = fac.fromBoundingBox(-180,-90,180,90,2)
 
 	v2 = fac.fromPoint(40.85, 14.17)
 
