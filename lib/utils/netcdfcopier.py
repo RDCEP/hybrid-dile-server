@@ -22,19 +22,29 @@ class NetcdfCopier(object):
 			raise
 
 		# dimensions that aren't in the blacklist
-		for dimension in [d for d in src.dimensions.values() if d.name not in dbl]:
-			dst.createDimension(dimension.name,dimension.size)
+		for dim in [d for d in src.dimensions.values() if d.name not in dbl]:
+			
+			if dim.isunlimited():
+				dst.createDimension(dim.name,None)
+			else:
+				dst.createDimension(dim.name,dim.size)
 		
 		# variables that don't run on the blacklisted dimensions 
 		#(set.intersection intersect the vector of dimensions with the blacklist)
 		# and are not blacklisted
-		for variable in [v for v in src.variables.values() if not set(v.dimensions).intersection(dbl) and v.name not in vbl]:
+		for var in [v for v in src.variables.values() if not set(v.dimensions).intersection(dbl) and v.name not in vbl]:
 			
-			newvar = dst.createVariable(variable.name,variable.dtype,variable.dimensions)
-			newvar[:] = variable[:]
+			if '_FillValue' in var.ncattrs():				
+				newvar = dst.createVariable(var.name,var.dtype,var.dimensions, fill_value =  var.getncattr('_FillValue'))
+			else:
+				newvar = dst.createVariable(var.name,var.dtype,var.dimensions)
+			
+			newvar[:] = var[:]
 
-			for attribute in variable.ncattrs():
-				newvar.setncattr(str(attribute),str(variable.getncattr(attribute)))
+			for attr in var.ncattrs():
+				
+				if attr != '_FillValue':
+					newvar.setncattr(str(attr),str(var.getncattr(attr)))
 
 		src.close()
 
