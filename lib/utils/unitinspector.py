@@ -1,6 +1,6 @@
 from cfunits import Units
 
-'''
+"""
 Class used to verify that the dimensions are cf-compliant
 the attributes may be passed both as ncvariables or dictionaries.
 In the latter case units value must be inside a dictionary filed named
@@ -15,9 +15,9 @@ Ex:
 			...
 	}
 
-'''
+"""
 
-class unitinspector(object):
+class UnitInspector(object):
 
 	def __init__(self, lat = None, lon = None, time = None, level = None):
 		
