@@ -28,7 +28,7 @@ class standardizer(object):
 		try:
 			self.__rgrp = Dataset(path+file,mode)
 		except:
-			print "File couldn't be opened"
+			print path+file," file couldn't be opened"
 
 # rollback the changes to the dimensions' names
 	def __rollback(self):
@@ -53,17 +53,15 @@ class standardizer(object):
 	def createNetcdf(self):
 
 		ncp  = NetcdfCopier()
+		dst  = None
 
 		self.__netcdfOpen(self.__srcpath,self.__file,self.__mode)
 		
 		geo = self.__checkUnits()
-		if geo:		
-			# if there is any variable left
-			if [v for v in self.__rgrp.variables.values() if not set(v.dimensions).intersection(self.__blacklist)]:
+		if geo:	
 				srcpath = self.__srcpath+self.__file
 				dstpath = self.__dstpath+self.__file
 				dst = ncp.copy(srcpath,dstpath,dbl=self.__blacklist)
-				
 		
 		self.__rollback()
 
@@ -75,10 +73,10 @@ class standardizer(object):
 		lat = False
 		lon = False
 
-		ui = unitinspector()
+		ui = UnitInspector()
 
 		for dimension in  self.__rgrp.dimensions.values():
-			
+
 			#if the dimension is present as variable as well (which it should)
 			if ( dimension.name in [i.name for i in self.__rgrp.variables.values()]):
 				
@@ -93,7 +91,6 @@ class standardizer(object):
 				else:
 
 					if ui.verifyLat(var):
-
 						lat = True
 
 						if var.name != 'lat':
@@ -102,7 +99,6 @@ class standardizer(object):
 							self.__rgrp.renameVariable(var.name,'lat')			
 
 					elif ui.verifyLon(var):
-
 						lon = True
 
 						if var.name != 'lon':
