@@ -1,5 +1,6 @@
 
 class GridFile(object):
+	
 	"""file rapresenting the interpolation grid for CDO"""
 	
 	def __init__(self, gridtype, xsize, ysize, xfirst, xinc, yfirst, yinc):
@@ -12,12 +13,13 @@ class GridFile(object):
 		self.yfirst		= yfirst
 		self.yinc		= yinc
 
+
 	def createGrid(self,path):
 
 		try:
-			file = open(path+"info.grid","w")
+			file = open(path,"w")
 		except:
-			print "couldn't create info.grid!"
+			print "couldn't create ", path
 		
 		file.write("gridtype = "+str(self.gridtype)+"\n")
 		file.write("xsize = "+str(self.xsize)+"\n")
@@ -27,6 +29,6 @@ class GridFile(object):
 		file.write("yfirst = "+str(self.yfirst)+"\n")
 		file.write("yinc = "+str(self.yinc)+"\n")
 
-		file.close()
 
-		return path+"info.grid"
+
+		return path
