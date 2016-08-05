@@ -2,7 +2,7 @@ from unitinspector	import UnitInspector
 from netcdfcopier 	import NetcdfCopier
 from netCDF4 import *
 
-class standardizer(object):
+class Standardizer(object):
 	
 	def __init__(self, srcpath, dstpath, file, mode='a'):
 
@@ -31,6 +31,7 @@ class standardizer(object):
 			self.__rgrp = Dataset(path+file,mode)
 		except:
 			print path+file," file couldn't be opened"
+			exit()
 
 #	rollback the changes to the dimensions' names
 	def __rollbackNames(self):
@@ -151,16 +152,16 @@ class standardizer(object):
 				
 				srcpath = self.__srcpath+self.__file
 				dstpath = self.__dstpath+self.__file
-				dst = ncp.copy(srcpath,dstpath,dbl=self.__blacklist)
+				ncp.copy(srcpath,dstpath,dbl=self.__blacklist)
 				
 				self.__rollbackGrid()
 		
 		self.__rollbackNames()
 
-		return dst
+		return dstpath
 
 
 if __name__ == '__main__':
 	
-	std = standardizer("../../rawnc/", "../../testednc/", "AgMERRA_2010_tavg.nc")
+	std = Standardizer("../../files/raw_files/", "../../files/std_files/", "AgMERRA_2010_tavg.nc")
 	std.createNetcdf()
