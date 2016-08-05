@@ -9,19 +9,21 @@ class GridMaker(object):
 	a uniform grid ready to be sliced in diles	
 	"""
 	
-	def __init__(self, src, dst, z):
+	def __init__(self, srcpath, dstpath, z):
 		
-		self.src = src
-		self.dst = dst
-		self.z   = z
+		self.src  = srcpath
+		self.dst  = dstpath
+		self.grid = None
+		self.z    = z
 
 
-		def gridInit(self): 
+	def gridInit(self): 
 
 		try:
 			src = Dataset(self.src,"a")
 		except:
 			print "couldn't open ", self.src
+			exit()
 
 
 		min_dile = DileGeometry()
@@ -51,11 +53,12 @@ class GridMaker(object):
 		yinc	= increment
 
 		gf = GridFile("lonlat", xsize, ysize, xfirst, xinc, yfirst, yinc)
-		gf.createGrid(self.dst)
+		
+		return gf.createGrid(self.dst)
 
 
 
 if __name__ == '__main__':
 	
-	r = GridMaker("../testednc/AgMERRA_2010_tavg.nc", " ", 2)
+	r = GridMaker("../files/std_files/AgMERRA_2010_tavg.nc", "../files/AgMERRA_2010_tavg.grid", 2)
 	r.gridInit()
