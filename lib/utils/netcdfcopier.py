@@ -47,5 +47,4 @@ class NetcdfCopier(object):
 					newvar.setncattr(str(attr),str(var.getncattr(attr)))
 
 		src.close()
-
-		return dst	
+		dst.close()	
