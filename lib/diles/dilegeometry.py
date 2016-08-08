@@ -89,11 +89,13 @@ class DileGeometry(object):
 
 			return self.y, self.x
 
-	
+	def asFeature(self):
+		return Feature(geometry=self.asPolygon())
+
 	def asDocument(self):
 		
 		document= {
-			"loc":Feature(geometry=self.asPolygon()),
+			"loc":asFeature,
 			"z":self.z,
 			"x":self.x,
 			"y":self.y
