@@ -1,0 +1,19 @@
+<!doctype html>
+<title>{% block title %}Welcome{% endblock %} | HybridDileServer</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+<div class="page">
+  <h1>HybridDileServer</h1>
+  <div class="navigation">
+  </div>
+  <ul class="flashes">
+      {% for action in actions %}
+        <li><em>{{ action['title'] }}</em><br/><a href="http://{{ action['example'] }}" target="_new">{{ action['example'] }}</a>
+      {% endfor %}
+      </ul>
+  <div class="body">
+  {% block body %}{% endblock %}
+  </div>
+  <div class="footer">
+    HybridDileServer &mdash; <a href="https://github.com/RDCEP/hybrid-dile-server">RDCEP/GitHub</a>
+  </div>
+</div>
