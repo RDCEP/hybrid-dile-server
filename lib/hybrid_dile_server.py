@@ -11,6 +11,10 @@ from hashlib import md5
 from datetime import datetime
 from pymongo  import MongoClient
 
+from geojson import Feature, Point, FeatureCollection
+
+from diles.dilefactory import DileFactory
+
 from flask import Flask
 from flask import Response
 from flask import request
@@ -79,8 +83,8 @@ def crossdomain(origin=None, methods=None, headers=None, max_age=21600, attach_t
                 h['Access-Control-Allow-Headers'] = headers
             return resp
 
-          f.provide_automatic_options = False
-          return update_wrapper(wrapped_function, f)
+        f.provide_automatic_options = False
+        return update_wrapper(wrapped_function, f)
 
     return decorator
 
@@ -215,8 +219,12 @@ def discovery_dile_by_position(lon,lat):
     -------------------------------------------------------------------------------------------
 
     """
-    query={}
-    return jsonify(query_db(query))
+    features=[]
+    diles=DileFactory.fromPoint(lon,lat)
+    for dile in diles:
+        features.append(dile.asFeature())
+    result=FeatureCollection(features)
+    return jsonify(result)
 
 @app.route('/discovery/dile/by/radius/<float:lon>/<float:lat>/<float:radius>')
 @jsonp
