@@ -1,5 +1,6 @@
 from unitinspector	import UnitInspector
 from netcdfcopier 	import NetcdfCopier
+from numpy			import array
 from netCDF4 import *
 
 class Standardizer(object):
@@ -20,8 +21,6 @@ class Standardizer(object):
 		self.__oldlev 	 = None  # for rollback reasons
 		self.__latscaled = False # for rollback reasons
 		self.__lonscaled = False # for rollback reasons
-
-
 
 
 #	open the netcdf file
@@ -149,7 +148,6 @@ class Standardizer(object):
 		geo = self.__checkUnits()
 		if geo:
 				self.__checkRange()
-				
 				srcpath = self.__srcpath+self.__file
 				dstpath = self.__dstpath+self.__file
 				ncp.copy(srcpath,dstpath,dbl=self.__blacklist)

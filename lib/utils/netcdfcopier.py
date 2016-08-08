@@ -39,6 +39,7 @@ class NetcdfCopier(object):
 			else:
 				newvar = dst.createVariable(var.name,var.dtype,var.dimensions)
 			
+
 			newvar[:] = var[:]
 
 			for attr in var.ncattrs():
