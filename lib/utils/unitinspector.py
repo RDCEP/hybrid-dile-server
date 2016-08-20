@@ -85,6 +85,7 @@ class UnitInspector(object):
 		
 		# a more rigorous way should be implemented
 		flag = False
+
 		try:
 			if   var.name == 'level':    flag = True
 			elif var.name == 'lev':      flag = True
