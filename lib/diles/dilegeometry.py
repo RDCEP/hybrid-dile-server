@@ -74,6 +74,12 @@ class DileGeometry(object):
 			dlat    = 180/float(sigma)
 			dlon    = 360/float(sigma)
 
+			if lon == 180:
+				lon -= 1/float(sigma)
+
+			if lat == -90:
+				lat += 1/float(sigma)
+
 			# the floor rapresent an hard constraint
 			# in the future a % of admittance could work better
 			x = floor( (lon + 180)/float(dlon)  )
@@ -102,3 +108,8 @@ class DileGeometry(object):
 		} 
 		
 		return document
+
+if __name__ == '__main__':
+	
+	dg = DileGeometry()
+	print dg.byZoomLonLat(6, -180, 90)
