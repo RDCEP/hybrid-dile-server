@@ -9,10 +9,11 @@ class Dile(DileGeometry):
 	
 	def __init__(self,z=0,x=0,y=0):
 	   
-		self.uri = None
+		self.uri 		= None
 		self.dimensions = None
-		self.variable = None
+		self.variable 	= None
 		self.attributes = None
+
 		super(Dile, self).__init__(z,x,y)
 
 	
@@ -28,18 +29,20 @@ class Dile(DileGeometry):
 		else: return -1
 
 
-	# create an empty netcdf4 matching the dile
-	def createNetCDF4(self):
+	# create a netcdf4 matching the dile
+	def createNetCDF4(self,path,matrix,dtype, fillvalue = None):
 
-		dirname="/tmp/"+str(self.z)+"/"+str(self.x)+"/"+str(self.y)+"/"
-	   
-		try:
-			os.makedirs(dirname)
-	   
-		except:
-			pass
-	   
-		filename=dirname+str(self.z)+"_"+str(self.x)+"_"+str(self.y)+".nc"
+
+		dirname=path+str(self.z)+"/"+str(self.x)+"/"+str(self.y)+"/"
+		filename=dirname+"dile_"+str(self.z)+"_"+str(self.x)+"_"+str(self.y)+".nc"
+
+
+		if not os.path.isfile(filename):
+			if not os.path.exists(dirname):
+				try:
+					os.makedirs(dirname,0755)
+				except:
+					raise
 
 		rootgrp = Dataset(filename, "w", format="NETCDF4")
 		
@@ -50,7 +53,16 @@ class Dile(DileGeometry):
 		# add variables
 		latitudes = rootgrp.createVariable("latitude","f4",("lat",))
 		longitudes = rootgrp.createVariable("longitude","f4",("lon",))
-		data = rootgrp.createVariable("data","f4",("lat","lon",))
+
+		latitudes.units  = 'degrees_north'
+		latitudes.axis   = 'Y'
+		longitudes.units = 'degrees_east'
+		longitudes.axis  = 'X'
+		
+		if fillvalue:
+			data = rootgrp.createVariable("data",dtype,("lat","lon",),fill_value = fillvalue)
+		else:
+			data = rootgrp.createVariable("data",dtype,("lat","lon",))
 		
 		bb = self.asBoundingBox()
 		
@@ -59,6 +71,7 @@ class Dile(DileGeometry):
 		
 		latitudes[:] = lats
 		longitudes[:] = lons
+		data[:] = matrix
 		
 		# add attributes		
 		'''
@@ -68,7 +81,6 @@ class Dile(DileGeometry):
 		rootgrp.close()
 
 		return filename
-
 
 
 
