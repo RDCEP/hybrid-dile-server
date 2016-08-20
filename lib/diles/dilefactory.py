@@ -89,12 +89,9 @@ class DileFactory(object):
 		for z in zoom:
 
 			#converting bb into tiles delimiters
-			y_max,x_min = min_dile.byZoomLonLat(z,lon_min,lat_min)
-			y_min,x_max = max_dile.byZoomLonLat(z,lon_max,lat_max)
+			y_min,x_min = min_dile.byZoomLonLat(z,lon_min,lat_max)
+			y_max,x_max = max_dile.byZoomLonLat(z,lon_max,lat_min)
 
-			#the inversion of y_min <-> y_max is due to the
-			#shifting of the center from the upper-left corner
-			#in regard of the lat/lon tile model
 			for i in range(int(x_min),int(x_max+1)):
 					for j in range(int(y_min),int(y_max+1)):
 						vec.append(Dile(z,i,j))
@@ -139,7 +136,13 @@ class DileFactory(object):
 		'''
 		pass
 
-	
+
+	@staticmethod
+	def printDileList(diles):
+
+		for item in diles:
+			print "dile %d/%d/%d" %(item.z,item.x,item.y)
+
 
 
 if __name__ == "__main__":
