@@ -1,6 +1,6 @@
 from unitinspector	import UnitInspector
 from netcdfcopier 	import NetcdfCopier
-from shutil			import copyfile
+from shutil 		import copyfile
 from netCDF4		import *
 
 class Standardizer(object):
@@ -15,9 +15,12 @@ class Standardizer(object):
 		self.__oldlon    = None  # for rollback reasons
 		self.__oldtime   = None  # for rollback reasons
 		self.__oldlev 	 = None  # for rollback reasons
+
 		self.__latscaled = False # for rollback reasons
 		self.__lonscaled = False # for rollback reasons
 
+		self.__rollgrid  = False
+		self.__rollnames = False
 
 
 #	rollback the changes to the dimensions' names
@@ -63,13 +66,15 @@ class Standardizer(object):
 	def __checkRange(self,nc):
 		
 		if max(nc.variables["lon"]) > 180:
-			nc.variables["lon"][:] -= -180
+			nc.variables["lon"][:] -= 180
 			self.__lonscaled = True
+			self.__rollgrid  = True
 
 		if max(nc.variables["lat"]) > 90:
 			
 			nc.variables["lat"][:] -= 90
 			self.__latscaled = True
+			self.__rollgrid  = True
 		
 		'''
 		if nc.variables["lon"][0] > nc.variables["lon"][-1]:
@@ -109,7 +114,8 @@ class Standardizer(object):
 						if var.name != 'lat':
 							self.__oldlat = var.name
 							nc.renameDimension(var.name,'lat')
-							nc.renameVariable(var.name,'lat')			
+							nc.renameVariable(var.name,'lat')
+							self.__rollnames = True
 
 					elif ui.verifyLon(var):
 						lon = True
@@ -118,6 +124,7 @@ class Standardizer(object):
 							self.__oldlon = var.name
 							nc.renameDimension(var.name,'lon')
 							nc.renameVariable(var.name,'lon')
+							self.__rollnames = True
 
 					elif ui.verifyTime(var):
 
@@ -125,6 +132,7 @@ class Standardizer(object):
 							self.__oldtime = var.name
 							nc.renameDimension(var.name,'time')
 							nc.renameVariable(var.name,'time')
+							self.__rollnames = True
 
 					elif ui.verifyLevel(var):
 
@@ -132,6 +140,7 @@ class Standardizer(object):
 							self.__oldlev = var.name
 							nc.renameDimension(var.name,'level')
 							nc.renameVariable(var.name,'level')
+							self.__rollnames = True
 
 					else:
 						self.dimblacklist.append(var.name)	# if the dimension is not among lat/lon/time/lev
@@ -163,12 +172,34 @@ class Standardizer(object):
 		nc.variables["lon"].setncattr("actual_range",lonrange)
 
 
+	def __simpleCopy(self,src,dst):
+
+		try:
+			# try as netcdf
+			copyfile(src.filepath(),dst.filepath())
+		except:
+			try:
+				# try as path
+				copyfile(src, dst)
+			except:
+				try:
+					# try mixed 
+					copyfile(src.filepath(), dst)
+				except:
+					try:
+						# try mixed
+						copyfile(src, dst.filepath())
+					except:
+						pass
+
+
 #	main function
 	def createNetcdf(self,srcitem,dstitem,f="NETCDF4"):
 
 		ncp  = NetcdfCopier()
 		dst  = None
 		src  = None
+		copied = False
 
 		if type(srcitem) is str:
 			
@@ -184,20 +215,6 @@ class Standardizer(object):
 			except:
 				print "src argument's type is not valid"
 
-		if type(dstitem) is str:
-			
-			try:
-				dst = Dataset(dstitem,"w",f)
-			except:
-				print "couldn't open the destination file"
-				raise
-		else:
-			try:
-				dst = dstitem
-				dst.dimensions.values()
-			except:
-				print "dst argument's type is not valid"
-
 
 		geo = self.__checkUnits(src)
 		
@@ -206,32 +223,39 @@ class Standardizer(object):
 				self.__checkRange(src)
 				self.__checkLatLonAttr(src)
 
-				# if any dimension or variable as been blacklisted, a copy is required
-				if self.dimblacklist or self.varblacklist:
+
+				if self.dimblacklist or self.varblacklist or self.__rollnames or self.__rollgrid:
+					
+					if type(dstitem) is str:
+						
+						try:
+							dst = Dataset(dstitem,"w",f)
+						except:
+							print "couldn't open the destination file"
+							raise
+					else:
+						try:
+							dst = dstitem
+							dst.dimensions.values()
+						except:
+							print "dst argument's type is not valid"
+
 					ncp.copy(src,dst,dbl=self.dimblacklist,vbl=self.varblacklist)
-					self.__rollbackGrid(src)
-					self.__rollbackNames(src)
-					src.close()
+					
+					if self.__rollnames:
+						self.__rollbackNames(src)
+					
+					if self.__rollgrid:
+						self.__rollbackGrid(src)
 
 					return dst
 
-				# otherwise a simple copy of the file will do
 				else:
 					if self.__forcecopy:
-						try:
-							copyfile(src.filepath(),dst.filepath())
-						except:
-							try:
-								copyfile(srcitem, dstitem)
-							except:
-								try:
-									copyfile(src.filepath(), dstitem)
-								except:
-									try:
-										copyfile(srcitem, dst.filepath())
-									except:
-										pass
+						self.__simpleCopy(srcitem, dstitem)
+
 					return src
+
 		else:
 			return None
 
@@ -239,6 +263,5 @@ class Standardizer(object):
 if __name__ == '__main__':
 	
 	std = Standardizer()
-	std.varblacklist.append("tavg")
-	std.createNetcdf("../../files/raw_files/AgMERRA_2010_tavg.nc", "../../files/std_files/AgMERRA_2010_tavg.nc")
+	std.createNetcdf("../../files/raw_files/ETOPO1_Ice_g_gmt4.nc", "../../files/std_files/ETOPO1_Ice_g_gmt4.nc")
 	
