@@ -1,3 +1,5 @@
+from os import path, makedirs
+
 
 class GridFile(object):
 	
@@ -14,21 +16,24 @@ class GridFile(object):
 		self.yinc		= yinc
 
 
-	def createGrid(self,path):
+	def createGrid(self,fname):
 
-		try:
-			file = open(path,"w")
-		except:
-			print "couldn't create ", path
+		if not path.exists(path.dirname(fname)):
+			try:
+				makedirs(path.dirname(fname))
+			except OSError as exc: # Guard against race condition
+				if exc.errno != errno.EEXIST:
+					raise
+		with open(fname, "w") as f:
 		
-		file.write("gridtype = "+str(self.gridtype)+"\n")
-		file.write("xsize = "+str(self.xsize)+"\n")
-		file.write("ysize = "+str(self.ysize)+"\n")
-		file.write("xfirst = "+str(self.xfirst)+"\n")
-		file.write("xinc = "+str(self.xinc)+"\n")
-		file.write("yfirst = "+str(self.yfirst)+"\n")
-		file.write("yinc = "+str(self.yinc)+"\n")
+			f.write("gridtype = "+str(self.gridtype)+"\n")
+			f.write("xsize = "+str(self.xsize)+"\n")
+			f.write("ysize = "+str(self.ysize)+"\n")
+			f.write("xfirst = "+str(self.xfirst)+"\n")
+			f.write("xinc = "+str(self.xinc)+"\n")
+			f.write("yfirst = "+str(self.yfirst)+"\n")
+			f.write("yinc = "+str(self.yinc)+"\n")
 
 
 
-		return path
+		return fname

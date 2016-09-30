@@ -3,42 +3,15 @@ from numpy	 import ndarray
 from sys 	 import getsizeof
 
 class NetcdfCopier(object):
+	
 	"""create a copy of the netcdf, can exclude certain variables and/or dimensions"""
 
 	# vbl : variables black list
 	# dbl : dimensions black list
 	# f   : format
-	@staticmethod
-	def copy(srcitem,dstitem,dbl=[],vbl=[],f="NETCDF4"):
+
+	def copy(self,src,dst,dbl=[],vbl=[],f="NETCDF4"):
 		
-		if type(srcitem) is str:
-			
-			try:
-				src = Dataset(srcitem,"r")
-			except:
-				print "couldn't open the source file for the copy"
-				raise
-		else:
-			try:
-				src = srcitem
-				src.dimensions.values()
-			except:
-				print "src argument's type is not valid"
-
-		if type(dstitem) is str:
-			
-			try:
-				dst = Dataset(dstitem,"w",f)
-			except:
-				print "couldn't open the destination file for the copy"
-				raise
-		else:
-			try:
-				dst = dstitem
-				dst.dimensions.values()
-			except:
-				print "dst argument's type is not valid"
-
 		# dimensions that aren't in the blacklist
 		for dim in [d for d in src.dimensions.values() if d.name not in dbl]:
 					
@@ -66,5 +39,4 @@ class NetcdfCopier(object):
 				if attr != '_FillValue':
 					newvar.setncattr(attr,var.getncattr(attr))
 
-		if type(dstitem) is str:
-			return dst
+		return dst

@@ -1,37 +1,20 @@
 import json
 import ntpath
 from netCDF4 import *
+from misc    import ncOpen, pathLeaf
 
 class Analyzer(object):
 	
 	"""Class to read and organize informations about a netcdf"""
 	
-	def __init__(self):
+	def __init__(self,nc, path):
 		
-		self.rgrp = None
-		self.path = None
+		self.rgrp = nc
+		self.path = path
 		self.vars = []
 		self.dims = []
 		self.glob = []
-
-
-
-	def ncOpen(self,path,mode='r'):
-
-		try:
-			self.rgrp = Dataset(path,mode)
-			self.path = path
-		except:
-			print "couldn't open the file: ", path
-			exit()
-
-	
-
-	def pathLeaf(self):
-		head, tail = ntpath.split(self.path)
-		return tail or ntpath.basename(head)	
-
-	
+		
 
 	def getVarInfo(self):
 
@@ -92,7 +75,7 @@ class Analyzer(object):
 		jdoc = {}
 
 		if self.path:
-			jdoc.update({"File": self.pathLeaf()})
+			jdoc.update({"File": pathLeaf()})
 
 		if self.dims:
 			jdoc.update({"dimensions": self.dims})
@@ -135,9 +118,9 @@ class Analyzer(object):
 
 
 if __name__ == '__main__':
-	
-	an = Analyzer()
-	an.ncOpen("../../files/regrid_files/test.nc")
+
+	src = ncOpen("../results/test1.nc")
+	an = Analyzer(src, "../results/test1.nc")
 	an.ncScan(False,True,False)
 	an.asJson(show = True)
 

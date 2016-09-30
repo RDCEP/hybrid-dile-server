@@ -89,12 +89,12 @@ class DileFactory(object):
 		for z in zoom:
 
 			#converting bb into tiles delimiters
-			y_min,x_min = min_dile.byZoomLonLat(z,lon_min,lat_max)
-			y_max,x_max = max_dile.byZoomLonLat(z,lon_max,lat_min)
+			y_min,x_min = min_dile.byZoomLonLat(int(z),lon_min,lat_max)
+			y_max,x_max = max_dile.byZoomLonLat(int(z),lon_max,lat_min)
 
 			for i in range(int(x_min),int(x_max+1)):
 					for j in range(int(y_min),int(y_max+1)):
-						vec.append(Dile(z,i,j))
+						vec.append(Dile(int(z),i,j))
 
 		return vec	
 

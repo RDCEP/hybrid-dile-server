@@ -7,7 +7,7 @@ class DileGeometry(object):
 	XSIZE=361
 	YSIZE=181
 
-	def __init__(self,z=0,x=0,y=0):
+	def __init__(self,z=0,y=0,x=0):
 		
 		self.z = z
 		self.x = x
@@ -53,13 +53,6 @@ class DileGeometry(object):
 						(bb['lon_max'], bb['lat_min']),
 						(bb['lon_min'], bb['lat_min'])
 						]])
-
-	
-	def byZXY(self,z,x,y):
-		
-		self.z = z
-		self.x = x
-		self.y = y
 	
 	
 	def byZoomLonLat(self,zoom,lon,lat):
@@ -95,21 +88,28 @@ class DileGeometry(object):
 
 			return self.y, self.x
 
+	
 	def asFeature(self):
 		return Feature(geometry=self.asPolygon())
 
+	
 	def asDocument(self):
 		
-		document= {
-			"loc":asFeature,
-			"z":self.z,
-			"x":self.x,
-			"y":self.y
-		} 
-		
-		return document
+		doc = {
+				"loc": self.asFeature(),
+				"z":self.z,
+				"x":self.x,
+				"y":self.y
+			} 
+
+		return doc
 
 if __name__ == '__main__':
 	
 	dg = DileGeometry()
-	print dg.byZoomLonLat(6, -180, 90)
+	print dg.byZoomLonLat(2, -99.713, 41.791 )
+	print dg.asBoundingBox()
+	print dg.asDocument()
+	print dg.z
+	print dg.x
+	print dg.y

@@ -1,13 +1,13 @@
 from unitinspector	import UnitInspector
 from netcdfcopier 	import NetcdfCopier
+from misc 			import ncOpen
 from shutil 		import copyfile
 from netCDF4		import *
 
 class Standardizer(object):
 	
-	def __init__(self, forcecopy = True):
+	def __init__(self):
 
-		self.__forcecopy  = forcecopy
 		self.dimblacklist = []
 		self.varblacklist = []
 
@@ -137,6 +137,7 @@ class Standardizer(object):
 					elif ui.verifyLevel(var):
 
 						if var.name != 'level':
+
 							self.__oldlev = var.name
 							nc.renameDimension(var.name,'level')
 							nc.renameVariable(var.name,'level')
@@ -172,48 +173,11 @@ class Standardizer(object):
 		nc.variables["lon"].setncattr("actual_range",lonrange)
 
 
-	def __simpleCopy(self,src,dst):
-
-		try:
-			# try as netcdf
-			copyfile(src.filepath(),dst.filepath())
-		except:
-			try:
-				# try as path
-				copyfile(src, dst)
-			except:
-				try:
-					# try mixed 
-					copyfile(src.filepath(), dst)
-				except:
-					try:
-						# try mixed
-						copyfile(src, dst.filepath())
-					except:
-						pass
-
 
 #	main function
-	def createNetcdf(self,srcitem,dstitem,f="NETCDF4"):
+	def createNetcdf(self,src,dstpath):
 
 		ncp  = NetcdfCopier()
-		dst  = None
-		src  = None
-		copied = False
-
-		if type(srcitem) is str:
-			
-			try:
-				src = Dataset(srcitem,"a")
-			except:
-				print "couldn't open the source file"
-				raise
-		else:
-			try:
-				src = srcitem
-				src.dimensions.values()
-			except:
-				print "src argument's type is not valid"
 
 
 		geo = self.__checkUnits(src)
@@ -223,22 +187,9 @@ class Standardizer(object):
 				self.__checkRange(src)
 				self.__checkLatLonAttr(src)
 
-
 				if self.dimblacklist or self.varblacklist or self.__rollnames or self.__rollgrid:
-					
-					if type(dstitem) is str:
-						
-						try:
-							dst = Dataset(dstitem,"w",f)
-						except:
-							print "couldn't open the destination file"
-							raise
-					else:
-						try:
-							dst = dstitem
-							dst.dimensions.values()
-						except:
-							print "dst argument's type is not valid"
+
+					dst = ncOpen(dstpath, mode='w')
 
 					ncp.copy(src,dst,dbl=self.dimblacklist,vbl=self.varblacklist)
 					
@@ -249,13 +200,8 @@ class Standardizer(object):
 						self.__rollbackGrid(src)
 
 					return dst
-
 				else:
-					if self.__forcecopy:
-						self.__simpleCopy(srcitem, dstitem)
-
 					return src
-
 		else:
 			return None
 
