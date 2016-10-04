@@ -60,13 +60,13 @@ class DileUploader(object):
 	#ext is the list of extentions of the file to select 
 	#src is the source folder to traverse
 	#dst select or create a path tree in the bucket of choice
-	def onUpload(self, ext, src='', dst=''):
+	def onUpload(self, ext, src='',folder='', dst=''):
 
 		lpw = LukePathWalker()
 
 		print "building the folder-tree"
 		files = []
-		for file in lpw.getDirectoryContent(src):
+		for file in lpw.getDirectoryContent(src+folder):
 			if lpw.checkExtention(ext, file):
 				files.append(file)
 		print "folder tree completed"
@@ -75,7 +75,8 @@ class DileUploader(object):
 		for fname in files:
 
 			srcpath = fname
-			dstpath = os.path.join(dst,fname)
+			dstpath = os.path.join(dst,fname[len(src):])
+
 			print 'Uploading %s to Amazon S3 bucket %s' %\
 					(pathLeaf(fname), self.bname)
 
@@ -103,11 +104,12 @@ class DileUploader(object):
 
 if __name__ == '__main__':
 
-	idkeypath 		= '/home/sergio/.s3/AWS_ACCESS_KEY_ID'
-	secretkeypath 	= '/home/sergio/.s3/AWS_SECRET_ACCESS_KEY'
-	bucketname 		= 'edu-uchicago-rdcep-diles'
-	srcfolder 		= '../results/diles/cd8f4999ec88a2cc002e10fef858a2f3' #2.0.0 tasmax
-	extensions 		= ['nc','nc4']
+	idkeypath 	= '/home/ubuntu/.s3/AWS_ACCESS_KEY_ID'
+	secretkeypath 	= '/home/ubuntu/.s3/AWS_SECRET_ACCESS_KEY'
+	bucketname 	= 'edu-uchicago-rdcep-diles'
+	src		= '/sdiles/ubuntu/diles'
+	folder 		= '/cd8f4999ec88a2cc002e10fef858a2f3'
+	extensions 	= ['nc','nc4']
 
 	dup = DileUploader(idkeypath, secretkeypath)
 
@@ -115,4 +117,4 @@ if __name__ == '__main__':
 
 	dup.selectBucket(bucketname)
 
-	dup.onUpload(extensions,srcfolder,'')
+	dup.onUpload(extensions,src,folder,'')
