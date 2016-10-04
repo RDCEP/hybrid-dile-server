@@ -73,6 +73,7 @@ class NetcdfSlicer(object):
 					c = indx[dile.x]["min"]
 					d = indx[dile.x]["max"]
 
+
 					if isinstance(var[ind], MaskedArray):
 						matrix = var[ind].data
 					else:
@@ -105,8 +106,8 @@ if __name__ == '__main__':
 	
 	timer = Chrono()
 	ncg   = NetcdfGeometry()
-	path  = "results/sdiles/sdile_tasmax_2_0_0.nc"
-	fname = pathLeaf(path)
+	path  = "/sdiles/ubuntu/sdiles/sdile_tasmax_2_0_1.nc"
+	fname = pathLeaf(path,False)
 
 	print "computing md5 for ", fname, "..."
 	timer.start()
@@ -114,7 +115,6 @@ if __name__ == '__main__':
 	timer.stop()
 	print "md5 computed in: ", timer.formatted()
 	
-
 	src  = ncOpen(path, mode='r')
 	bb = ncg.getBoundingBox(src['lat'],src['lon'])
 	z  = ncg.getZoomLevel(src['lat'],src['lon'])
@@ -125,7 +125,8 @@ if __name__ == '__main__':
 
 	print "extracting data tiles..."
 	timer.start()
-	ndiles = ncs.createDiles("results/diles/"+md5+"/"+fname,bb,int(z))
+	ndiles = ncs.createDiles("/sdiles/ubuntu/diles/"+md5+"/"+fname,bb,int(z))
 	timer.stop()
 	print chr(27) + "[2J" #escape sequence
 	print ndiles, "created. task completed in: ", timer.formatted()
+
