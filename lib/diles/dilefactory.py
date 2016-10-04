@@ -92,8 +92,8 @@ class DileFactory(object):
 			y_min,x_min = min_dile.byZoomLonLat(int(z),lon_min,lat_max)
 			y_max,x_max = max_dile.byZoomLonLat(int(z),lon_max,lat_min)
 
-			for i in range(int(x_min),int(x_max+1)):
-					for j in range(int(y_min),int(y_max+1)):
+			for i in range(int(y_min),int(y_max+1)):
+					for j in range(int(x_min),int(x_max+1)):
 						vec.append(Dile(int(z),i,j))
 
 		return vec	
@@ -161,12 +161,12 @@ if __name__ == "__main__":
 	print "\nFrom boundingBox:\n"
 	
 	for item in v1:
-		print "dile %d/%d/%d" %(item.z,item.x,item.y)
+		print "dile %d/%d/%d" %(item.z,item.y,item.x)
 
 	print "\nFrom Point:\n"
 	for item in v2:
-		print "dile %d/%d/%d" %(item.z,item.x,item.y)
+		print "dile %d/%d/%d" %(item.z,item.y,item.x)
 
 	print "\nFrom subTree:\n"
 	for item in v3:
-		print "dile %d/%d/%d" %(item.z,item.x,item.y)
+		print "dile %d/%d/%d" %(item.z,item.y,item.x)
