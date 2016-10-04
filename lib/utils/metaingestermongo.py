@@ -121,7 +121,7 @@ if __name__ == '__main__':
 	df    = DileFactory()
 	timer = Chrono()
 
-	path  = "results/sdiles/sdile_tasmax_2_0_0.nc"
+	path  = "/sdiles/ubuntu/sdiles/sdile_tasmax_2_0_1.nc"
 	fname = pathLeaf(path,False)
 	
 
