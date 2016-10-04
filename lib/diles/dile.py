@@ -2,7 +2,7 @@
 import os
 import pprint
 
-from numpy 			import linspace
+from numpy 		import linspace
 from numpy.ma 		import MaskedArray
 from netCDF4 		import Dataset
 from dilegeometry 	import DileGeometry
@@ -35,22 +35,16 @@ class Dile(DileGeometry):
 
 
 	# create a netcdf4 matching the dile
-	def createNetCDF4(self,path,matrix,dtype, fillvalue = None):
+	def createNetCDF4(self,fpath,matrix,dtype, fillvalue = None):
 
-		#path example md5/varname/*time*/*level*/...
+		if not os.path.exists(os.path.dirname(fpath)):
+    		  try:
+        	    os.makedirs(os.path.dirname(fpath))
+    		  except OSError as exc: # Guard against race condition
+        	    if exc.errno != errno.EEXIST:
+            	      raise
 
-		dirname=self.getRelativePath(path)
-		filename=dirname+self.getFileName()
-
-
-		if not os.path.isfile(filename):
-			if not os.path.exists(dirname):
-				try:
-					os.makedirs(dirname,0755)
-				except:
-					raise
-
-		rootgrp = Dataset(filename, "w", format="NETCDF4")
+		rootgrp = Dataset(fpath, "w", format="NETCDF4")
 		
 		# add dimensions
 		lat = rootgrp.createDimension("lat", DileGeometry.YSIZE)
@@ -89,7 +83,7 @@ class Dile(DileGeometry):
 
 		rootgrp.close()
 
-		return filename
+		return fpath
 
 
 
