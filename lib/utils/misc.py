@@ -1,8 +1,11 @@
 import hashlib
 import os
+import json
+
 from netCDF4 import *
 from ntpath  import split, basename
 from sys 	 import stdout
+
 
 def printProgress (iteration, total, prefix = '', suffix = '',ratio = True, last = True, decimals = 2, barLength = 30):
 	
