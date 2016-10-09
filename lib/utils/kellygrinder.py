@@ -1,6 +1,6 @@
 from netCDF4 				import *
 from diles.dile 			import Dile
-from utils.misc 			import ncOpen, serialize, retrive, exists, pathLeaf
+from utils.misc 			import ncOpen, serialize, retrive, exists, pathLeaf, printProgress
 from utils.gridfile 		import GridFile
 from utils.cdoregridder		import CdoRegridder
 from utils.serializer 		import Serializer
@@ -17,7 +17,7 @@ class KellyGrinder(object):
 	
 
 	# check for a bbox what are the tiles available in agmerra
-	def getUriList(self, bboxidxs, src):
+	def getUriList(self, bbidxs, src):
 
 		uri = []
 
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     # ---- loping part starts ---- #
 
     #inizialization
-	dile = Dile(2,0,2)
+	dile = Dile(2,1,1)
 
 	bbox = dile.asBoundingBox()		
 	lats = linspace(bbox['lat_min'],bbox['lat_max'],dile.YSIZE, endpoint=True)
@@ -249,7 +249,7 @@ if __name__ == '__main__':
 
 	# index initialization
 	indexfolder = basefolder+"index/"
-	name 		= "dile_"+str(dile.x)+"_"+str(dile.y)+"_"+str(dile.z)+"_"+"index.json"
+	name 		= "dile_"+str(dile.z)+"_"+str(dile.y)+"_"+str(dile.x)+"_"+"index.json"
 
 	if exists(indexfolder, name):
 		index = retrive(indexfolder, name)
@@ -303,7 +303,7 @@ if __name__ == '__main__':
 
 			timer.stop()
 
-			print urls[i]['name']," elaboration completed. ", timer.formatted, " [",i+1,"/",len(urls),"]"
+			printProgress(i, len(urls), urls[i]['name'], str(" [",i+1,"/",len(urls),"]"))
 
 			timer.reset()
 
