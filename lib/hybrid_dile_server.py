@@ -3,7 +3,7 @@
     Hybrid Dile Server
     ~~~~~~~~
     A data tile server
-    :copyright: (c) 2016 by Raffaele Montella.
+    :copyright: (c) 2016 by Raffaele Montella & Sergio Apreda.
     :license: Apache 2.0, see LICENSE for more details.
 """
 import json, sys, re, urllib, urllib2, socket, json, pydoc, cgi, os, time, inspect
@@ -111,7 +111,7 @@ app = Flask(__name__)
 # Load default config and override config from an environment variable
 app.config.update(dict(
     DATABASE='test',
-    COLLECTION='netcdf',
+    COLLECTION='diles',
     DEBUG=True,
     SECRET_KEY='development key',
     USERNAME='admin',
@@ -205,7 +205,7 @@ def index():
 -------------------------------------------------------------------------------------------
 """
 
-@app.route('/discovery/dile/by/position/<float:lon>/<float:lat>')
+@app.route('/discovery/dile/by/position/<lon>/<lat>')
 @jsonp
 def discovery_dile_by_position(lon,lat):
     """Discovery the diles given a lon/lat position.
@@ -219,16 +219,38 @@ def discovery_dile_by_position(lon,lat):
     -------------------------------------------------------------------------------------------
 
     """
+
+    '''
+    old code
     features=[]
     diles=DileFactory.fromPoint(lon,lat)
     for dile in diles:
         features.append(dile.asFeature())
     result=FeatureCollection(features)
     return jsonify(result)
+    '''
+    print type(lon)
+    print type(lat)
+
+    query = [
+	     {	"loc.geometry":{ 
+		"$geoIntersects" : { 
+		"$geometry" : { 
+		"type": "Point", "coordinates": [float(lon),float(lat)] 
+			} 
+		      },
+		    }
+		  },
+	      {"_id":0,"uri":1}
+             ]
+
+    return jsonify(query_db(query))
+
+    
 
 @app.route('/discovery/dile/by/radius/<float:lon>/<float:lat>/<float:radius>')
 @jsonp
-def discovery_dile_by_range(lon,lat,radius):
+def discovery_dile_by_radius(lon,lat,radius):
     """Discovery the diles given a center point by lon/lat and a radius in km.
 
     :param: time: time costraits
@@ -241,7 +263,6 @@ def discovery_dile_by_range(lon,lat,radius):
     -------------------------------------------------------------------------------------------
 
     """
-    query={}
     return jsonify(query_db(query))
 
 @app.route('/discovery/dile/by/bbox/<float:minLon>/<float:minLat>/<float:maxLon>/<float:maxLat>')
@@ -284,33 +305,13 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     return jsonify(query_db(query))
 
 def query_db(query):
-    features=[]
+    
     db = get_db()
-    diles = db[app.config['COLLECTION']].find(query)
-    for dile in diles:
-        feature={
-            "geometry": {
-                "coordinates": [
-                    [
-                        [ -29.8828125, 33.7243396617476 ], 
-                        [ -29.8828125, 45.5832897560063 ], 
-                        [  -9.84375,   45.5832897560063 ], 
-                        [  -9.84375,   33.7243396617476 ], 
-                        [ -29.8828125, 33.7243396617476 ]
-                    ]
-                ], 
-                "type": "Polygon"
-            }, 
-            "properties": {
-                "uri": dile['uri']
-            }, 
-            "type": "Feature"
-        }
-        features.append(feature)
-    result={
-        "type": "FeatureCollection",
-        "features": features
-    }
+    result = []
+    cursor = db[app.config['COLLECTION']].find(query[0],query[1])
+
+    for pointer in cursor:    
+        result.append(pointer)
 
     return result
 
