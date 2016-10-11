@@ -5,14 +5,15 @@ import os.path
 import sys
 
 from lukepathwalker import LukePathWalker
-from misc 		  	import pathLeaf
+from misc 	    import pathLeaf, printProgress
+from chrono 	    import Chrono
 
 class DileUploader(object):
 
 	MAX_SIZE  = 20 * 1000 * 1000
 	PART_SIZE = 5  * 1000 * 1000
 	
-	"""docstring for DileUploader"""
+	"""used to upload the files contained in a folder, and its subfolders"""
 	def __init__(self, idkeypath, secretkeypath):
 
 		self.idkp   = idkeypath
@@ -20,13 +21,7 @@ class DileUploader(object):
 
 		self.conn   = None
 		self.bucket = None
-		self.bname 	= None
-
-
-
-	def percentCB(self, complete, total):
-		sys.stdout.write('.')
-		sys.stdout.flush() 
+		self.bname  = None
 
 
 	def onConnect(self):
@@ -47,6 +42,16 @@ class DileUploader(object):
 			print "connected succesfully"
 
 
+	def keyExists(self,path):
+		
+		# create a key to use as destination
+                k = boto.s3.key.Key(self.bucket)
+                # it will be set as the destination path
+                k.key = path
+		
+		return k.exists()
+
+
 	def selectBucket(self, bname):
 
 		try:
@@ -64,42 +69,47 @@ class DileUploader(object):
 
 		lpw = LukePathWalker()
 
-		print "building the folder-tree"
 		files = []
 		for file in lpw.getDirectoryContent(src+folder):
 			if lpw.checkExtention(ext, file):
 				files.append(file)
-		print "folder tree completed"
 
-
+		n = 0 #for printing pourposes
 		for fname in files:
 
 			srcpath = fname
+			# allows for custom path in the destination folder to be placed before the path
 			dstpath = os.path.join(dst,fname[len(src):])
-
-			print 'Uploading %s to Amazon S3 bucket %s' %\
-					(pathLeaf(fname), self.bname)
-
+			# compute the size of the file
 			fsize = os.path.getsize(srcpath)
+			# create a key to use as destination
+                        k = boto.s3.key.Key(self.bucket)
+                        # it will be set as the destination path
+                        k.key = dstpath
 
-			if fsize > self.MAX_SIZE:
-				print "multipart upload"
-				mp = self.bucket.initiate_multipart_upload(dstpath)
-				fp = open(srcpath,'rb')
-				fpnum = 0
+			if not self.KeyExists():
 
-				while (fp.tell() < fsize):
-					fpnum += 1
-					print 'uploading part %i' %fpnum
-					mp.upload_part_from_file(fp, fpnum, cb=percentCB, num_cb=10, size=self.PART_SIZE)
+				# selection between single-part upload and multipart (in case is too big)
+				if fsize > self.MAX_SIZE:
+					mp = self.bucket.initiate_multipart_upload(dstpath)
+					fp = open(srcpath,'rb')
+					fpnum = 0
 
-				mp.complete_upload()
+					while (fp.tell() < fsize):
+						fpnum += 1
+						# function to upload a file in chunks
+						mp.upload_part_from_file(fp, fpnum, size=self.PART_SIZE)
 
-			else:
-				print "singlepart upload"
-				k = boto.s3.key.Key(self.bucket)
-				k.key = dstpath
-				k.set_contents_from_filename(srcpath, cb=self.percentCB, num_cb = 10)
+					mp.complete_upload() # function to notify the completion of the multipart upload 
+
+				else:	
+					# uploads a file in its entirety
+					k.set_contents_from_filename(srcpath)
+
+			printProgress(n, len(files),"uploading on: "+self.bname, pathLeaf(fname))
+			n += 1
+		
+		return len(files)
 
 
 if __name__ == '__main__':
@@ -108,13 +118,19 @@ if __name__ == '__main__':
 	secretkeypath 	= '/home/ubuntu/.s3/AWS_SECRET_ACCESS_KEY'
 	bucketname 	= 'edu-uchicago-rdcep-diles'
 	src		= '/sdiles/ubuntu/diles'
-	folder 		= '/cd8f4999ec88a2cc002e10fef858a2f3'
+	folder 		= '/6868331851f3cf7e31eeee31bdd2e6d6'
 	extensions 	= ['nc','nc4']
+	timer 		= Chrono()	
 
 	dup = DileUploader(idkeypath, secretkeypath)
 
 	dup.onConnect()
 
 	dup.selectBucket(bucketname)
-
-	dup.onUpload(extensions,src,folder,'')
+	
+	timer.start()
+	ndocs = dup.onUpload(extensions,src,folder,'')
+	timer.stop()
+	
+	print chr(27) + "[2J" #escape sequence
+	print ndocs, "documents ingested. task completed in: ", timer.formatted()
