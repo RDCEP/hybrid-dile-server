@@ -10,8 +10,8 @@ class DileGeometry(object):
 	def __init__(self,z=0,y=0,x=0):
 		
 		self.z = z
-		self.x = x
 		self.y = y
+		self.x = x
 		self.xSize = DileGeometry.XSIZE
 		self.ySize = DileGeometry.YSIZE
 
