@@ -94,5 +94,5 @@ if __name__ == "__main__":
 	print dile.asBoundingBox()
 	print dile.asDocument()
 	print dile.z
-	print dile.x
 	print dile.y
+	print dile.x
