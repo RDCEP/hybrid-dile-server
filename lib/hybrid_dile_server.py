@@ -231,17 +231,17 @@ def discovery_dile_by_position(lon,lat):
     return jsonify(result)
     '''
 
-    query = [
-	     {	"loc.geometry":{ 
-		"$geoIntersects" : { 
-		"$geometry" : { 
-		"type": "Point", "coordinates": [float(lon),float(lat)] 
-			} 
-		      },
-		    }
-		  },
-	      {"_id":0,"uri":1}
-             ]
+    query = [{   
+                "loc.geometry":{ 
+                    "$geoIntersects" : { 
+                        "$geometry" : { 
+                            "type": "Point", "coordinates": [float(lon),float(lat)] 
+                        } 
+                    }
+		        }
+		     },
+             {"_id":0,"uri":1}
+            ]
 
     return jsonify(query_diles_db(query))
 
@@ -263,14 +263,13 @@ def discovery_dile_by_radius(lon,lat,radius):
 
     """
 
-    query = [
-        {
-            "loc.geometry": {
-                "$geoWithin": { "$centerSphere": [ [ float(lon), float(lat) ], float(radius) ] }
-            }
-        },
-        {"_id":0,"uri":1}
-    ]
+    query = [{
+                "loc.geometry": {
+                    "$geoWithin": { "$centerSphere": [ [float(lon), float(lat)], float(radius)/(3963.2) ] }
+                }
+             },
+             {"_id":0,"uri":1}
+            ]
 
     return jsonify(query_diles_db(query))
 
@@ -291,28 +290,30 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     -------------------------------------------------------------------------------------------
 
     """
+
     time=request.args.get('time')
     level=request.args.get('level')
     vars=request.args.get('vars')
     
-    query= {
-    "loc.geometry": {
-        "$geoIntersects": {
-            "$geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [ float(minLon), float(minLat) ],
-                        [ float(minLon), float(maxLat) ],
-                        [ float(maxLon), float(maxLat) ],
-                        [ float(maxLon), float(minLat) ],
-                        [ float(minLon), float(minLat) ]
-                    ]
-                ]
+    query= [{
+                "loc.geometry": {
+                    "$geoIntersects": {
+                        "$geometry": {
+                            "type": "Polygon",
+                            "coordinates": [[
+                                [ float(minLon), float(minLat) ],
+                                [ float(minLon), float(maxLat) ],
+                                [ float(maxLon), float(maxLat) ],
+                                [ float(maxLon), float(minLat) ],
+                                [ float(minLon), float(minLat) ]
+                            ]]
+                        }
+                    }
                 }
-            }
-        }
-    }
+            },
+            {"_id":0,"uri":1}
+           ]
+    
     return jsonify(query_diles_db(query))
 
 def query_diles_db(query):
