@@ -208,7 +208,7 @@ if __name__ == '__main__':
     # ---- loping part starts ---- #
 
     #inizialization
-	dile = Dile(2,2,1)
+	dile = Dile(2,0,3)
 
 	bbox = dile.asBoundingBox()		
 	lats = linspace(bbox['lat_min'],bbox['lat_max'],dile.YSIZE, endpoint=True)
@@ -257,67 +257,68 @@ if __name__ == '__main__':
 		index = 0
 		serialize(index, indexfolder, name)
 
-
-
 	# sdiles armonization
 	for i in range(index,len(urls)):
-		try:
+		
+		#try:
 			
-			src = kg.downloadFile(urls[i]['uri'], basefolder+"temp/raw/")
+		src = kg.downloadFile(urls[i]['uri'], basefolder+"temp/raw/")
 
-			if src:
+		if src:
 
-				'''
-				This parts use cdo to regrid the downloaded file into the dile grid
+			'''
+			This parts use cdo to regrid the downloaded file into the dile grid
 
-				zoom    = 2
-				grid 	= kg.createTileGrid(src, basefolder+"grid/", urls[i]['latidx'], urls[i]['lonidx'], zoom)
-				tile 	= kg.regridTile(src, basefolder+"regrid/", grid, "remapbic")
-				nctile  = nco.ncOpen(tile)
-				'''
+			zoom    = 2
+			grid 	= kg.createTileGrid(src, basefolder+"grid/", urls[i]['latidx'], urls[i]['lonidx'], zoom)
+			tile 	= kg.regridTile(src, basefolder+"regrid/", grid, "remapbic")
+			nctile  = nco.ncOpen(tile)
+			'''
 
-				timer.start()
-				
-				nctile = ncOpen(src)
-				
-				latind = []
-				for lat in nctile.variables['lat'][:]:
-					latind.append(kg.match(lats,lat))
-
-				lonind = []
-				for lon in nctile.variables['lon'][:]:
-					lonind.append(kg.match(lons,lon))
-
-
-
-				dimensions = nctile.dimensions.values()
-				variables  = [v for v in nctile.variables.values() if v.name not in [d.name for d in dimensions ]]
-
-				for v in variables: 
-					if len(v.shape) > 2:
-						sdiles[v.name][v.name][...,latind,lonind] = nctile[v.name][...,:,:]
-					else:
-						sdiles[v.name][v.name][latind,lonind] = nctile[v.name][:,:]
-
-				serialize(i+1, indexfolder, name)
-				nctile.close()
-				remove(src)
-
-				timer.stop()
-
-				printProgress(i, len(urls), urls[i]['name'],"last tile armonized in: "+timer.formatted())
-
-				timer.reset()
-
-		except:
+			timer.start()
 			
-			serialize(i, indexfolder, name)
-			# closing the super diles
-			for key, value in sdiles.iteritems():
-				value.close()
+			nctile = ncOpen(src)
+			
+			latind = []
+			for lat in nctile.variables['lat'][:]:
+				latind.append(kg.match(lats,lat))
 
-		else:
+			lonind = []
+			for lon in nctile.variables['lon'][:]:
+				lonind.append(kg.match(lons,lon))
 
-			# closing the super diles
-			for key, value in sdiles.iteritems():
-				value.close()
+
+			dimensions = nctile.dimensions.values()
+			variables  = [v for v in nctile.variables.values() if v.name not in [d.name for d in dimensions ]]
+
+			for v in variables: 
+				if len(v.shape) > 2:
+					sdiles[v.name][v.name][...,latind,lonind] = nctile[v.name][...,:,:]
+				else:
+					sdiles[v.name][v.name][latind,lonind] = nctile[v.name][:,:]
+
+			serialize(i+1, indexfolder, name)
+			nctile.close()
+			remove(src)
+
+			timer.stop()
+
+			printProgress(i, len(urls), urls[i]['name'],"last tile armonized in: "+timer.formatted())
+
+			timer.reset()
+			'''	
+			except:
+
+				raise
+				exit()
+				print 'saving!'
+				serialize(i, indexfolder, name)
+				# closing the super diles
+				for key, value in sdiles.iteritems():
+					value.close()
+
+			else:
+			'''	
+	# closing the super diles
+	for key, value in sdiles.iteritems():
+		value.close()
