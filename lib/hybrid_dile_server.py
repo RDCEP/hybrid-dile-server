@@ -111,7 +111,8 @@ app = Flask(__name__)
 # Load default config and override config from an environment variable
 app.config.update(dict(
     DATABASE='test',
-    COLLECTION='diles',
+    COLLECTION_DILES='diles',
+    COLLECTION_FILES='files',
     DEBUG=True,
     SECRET_KEY='development key',
     USERNAME='admin',
@@ -229,8 +230,6 @@ def discovery_dile_by_position(lon,lat):
     result=FeatureCollection(features)
     return jsonify(result)
     '''
-    print type(lon)
-    print type(lat)
 
     query = [
 	     {	"loc.geometry":{ 
@@ -244,7 +243,7 @@ def discovery_dile_by_position(lon,lat):
 	      {"_id":0,"uri":1}
              ]
 
-    return jsonify(query_db(query))
+    return jsonify(query_diles_db(query))
 
     
 
@@ -263,7 +262,7 @@ def discovery_dile_by_radius(lon,lat,radius):
     -------------------------------------------------------------------------------------------
 
     """
-    return jsonify(query_db(query))
+    return jsonify(query_diles_db(query))
 
 @app.route('/discovery/dile/by/bbox/<float:minLon>/<float:minLat>/<float:maxLon>/<float:maxLat>')
 @jsonp
@@ -302,18 +301,32 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
             }
         }
     }
-    return jsonify(query_db(query))
+    return jsonify(query_diles_db(query))
 
-def query_db(query):
+def query_diles_db(query):
     
     db = get_db()
     result = []
-    cursor = db[app.config['COLLECTION']].find(query[0],query[1])
+    cursor = db[app.config['COLLECTION_DILES']].find(query[0],query[1])
 
     for pointer in cursor:    
         result.append(pointer)
 
     return result
+
+
+def query_files_db(query):
+
+    db = get_db()
+    result = []
+    cursor = db[app.config['COLLECTION_FILES']].find(query[0],query[1])
+
+    for pointer in cursor:    
+        result.append(pointer)
+
+    return result
+
+
 
 @app.route('/select/dile')
 @jsonp
