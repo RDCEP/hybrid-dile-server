@@ -247,7 +247,7 @@ def discovery_dile_by_position(lon,lat):
 
     
 
-@app.route('/discovery/dile/by/radius/<float:lon>/<float:lat>/<float:radius>')
+@app.route('/discovery/dile/by/radius/<lon>/<lat>/<radius>')
 @jsonp
 def discovery_dile_by_radius(lon,lat,radius):
     """Discovery the diles given a center point by lon/lat and a radius in km.
@@ -262,9 +262,18 @@ def discovery_dile_by_radius(lon,lat,radius):
     -------------------------------------------------------------------------------------------
 
     """
+
+    query = {
+        "loc.geometry":   {
+            "$geoWithin": { "$centerSphere": [ [ float(lon), float(lat) ], float(radius) ] }
+        }
+    }
+
     return jsonify(query_diles_db(query))
 
-@app.route('/discovery/dile/by/bbox/<float:minLon>/<float:minLat>/<float:maxLon>/<float:maxLat>')
+
+
+@app.route('/discovery/dile/by/bbox/<minLon>/<minLat>/<maxLon>/<maxLat>')
 @jsonp
 def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     """Discovery the diles given a bounding box.
@@ -290,11 +299,11 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
                 "type": "Polygon",
                 "coordinates": [
                     [
-                        [ minLon, minLat ],
-                        [ minLon, maxLat ],
-                        [ maxLon, maxLat ],
-                        [ maxLon, minLat ],
-                        [ minLon, minLat ]
+                        [ float(minLon), float(minLat) ],
+                        [ float(minLon), float(maxLat) ],
+                        [ float(maxLon), float(maxLat) ],
+                        [ float(maxLon), float(minLat) ],
+                        [ float(minLon), float(minLat) ]
                     ]
                 ]
                 }
