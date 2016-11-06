@@ -266,7 +266,7 @@ def discovery_dile_by_radius(lon,lat,radius):
     query = {
         "loc.geometry":   {
             "$geoWithin": { "$centerSphere": [ [ float(lon), float(lat) ], float(radius) ] }
-        }
+        },
         {"_id":0,"uri":1}
     }
 
