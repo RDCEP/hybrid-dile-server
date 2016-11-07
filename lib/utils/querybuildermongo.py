@@ -170,6 +170,7 @@ if __name__ == '__main__':
 	rng = qbm.queryTimeRange("time","2016-10-01-00:00:00","2016-10-03-00:00:00")
 	pt  = qbm.queryIntersectPoint("loc.geometry", -135.0, 67.5)
 	cir = qbm.queryIntersectRadius("loc.geometry", -135.0, 67.5, 20) 
+	
 
 
 	qbm.addField(rng)
