@@ -303,32 +303,26 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
 def query_diles_db(query):
     
     db = get_db()
-    result = []
-    '''
-    cursor = db[app.config['COLLECTION_DILES']].find(query[0],query[1])
-
-    for pointer in cursor:    
-        result.append(pointer)
-    '''
     return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]))
 
 
 def query_files_db(query):
 
     db = get_db()
-    result = []
-    cursor = db[app.config['COLLECTION_FILES']].find(query[0],query[1])
-
-    for pointer in cursor:    
-        result.append(pointer)
-
-    return result
+    return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1]))
 
 
-def aggregate_diles_result(pipeline):
+def aggregate_result_diles(pipeline):
 
     db = get_db()
-    result = []
+    return list(db.[app.config['COLLECTION_DILES']].aggregate(pipeline))
+
+
+def aggregate_result_diles(pipeline):
+
+    db = get_db()
+    return list(db.[app.config['COLLECTION_FILES']].aggregate(pipeline))
+
 
 
 @app.route('/select/dile')
