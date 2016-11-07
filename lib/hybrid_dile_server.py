@@ -118,8 +118,8 @@ app.config.update(dict(
     DEBUG            =True,
     SECRET_KEY       ='development key',
     USERNAME         ='admin',
-    PASSWORD         ='default'
-    LOCATION         = 'loc.geometry'
+    PASSWORD         ='default',
+    LOCATION         = 'loc.geometry',
     TIME             = 'time' 
 ))
 app.config.from_envvar('HYBRID_DILE_SERVER_SETTINGS', silent=True)
