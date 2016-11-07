@@ -121,16 +121,9 @@ class DileGeometry(object):
 
 if __name__ == '__main__':
 	
-	dg = DileGeometry()
-	print dg.byZoomLonLat(2, -99.713, 41.791 )
-	print dg.asBoundingBox()
-	print dg.asDocument()
-	print dg.z
-	print dg.x
-	print dg.y
 
-	dg1 = DileGeometry(z=2,y=0,x=0)
+	dg1 = DileGeometry(z=2,y=1,x=0)
 	print dg1.asDocument()
 
-	dg3 = DileGeometry(z=2,y=1,x=0)
-	print dg3.asDocument()
+	dg2 = DileGeometry(z=2,y=0,x=1)
+	print dg2.asDocument()
