@@ -219,7 +219,7 @@ def discovery_dile_by_position(lon,lat):
     :param: level: level costrains
     :param: vars: variables contraints
 
-    :example: /discovery/dile/by/position/14.28/40.55
+    :example: /discovery/dile/by/position/-135.0/22.5
 
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
@@ -245,8 +245,7 @@ def discovery_dile_by_radius(lon,lat,radius):
     :param: time: time costraits
     :param: level: level costrains
     :param: vars: variables contraints
-
-    :example: /discovery/dile/by/radius/14.25/40.25/25.0
+    :example: /discovery/dile/by/radius/-135.0/22.5/100.0
 
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
@@ -273,7 +272,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     :param: level: level costrains
     :param: vars: variables contraints
 
-    :example: /discovery/dile/by/bbox/13.0/40.0/15.0/41.0
+    :example: /discovery/dile/by/bbox/-135.0/22.5/-45.0/67.5
 
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
