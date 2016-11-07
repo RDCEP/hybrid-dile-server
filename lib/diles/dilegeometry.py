@@ -1,5 +1,5 @@
 
-from numpy import floor
+from numpy import floor, array
 from geojson import Polygon, Feature, Point, FeatureCollection
 
 class DileGeometry(object):
@@ -55,6 +55,20 @@ class DileGeometry(object):
 						]])
 	
 	
+	def centerOf(self, bb):
+		
+		vec = [
+				[bb['lon_min'],bb['lat_min']],
+				[bb['lon_max'],bb['lat_min']],
+				[bb['lon_max'],bb['lat_max']],
+				[bb['lon_min'],bb['lat_max']]
+		]
+
+		arr = array(vec)
+
+		return ((arr[0]+arr[1]+arr[2]+arr[3])/4).tolist()
+
+
 	def byZoomLonLat(self,zoom,lon,lat):
 		
 		x=y=0
@@ -99,7 +113,8 @@ class DileGeometry(object):
 				"loc": self.asFeature(),
 				"z":self.z,
 				"x":self.x,
-				"y":self.y
+				"y":self.y,
+				"center": self.centerOf(self.asBoundingBox())
 			} 
 
 		return doc
@@ -113,3 +128,9 @@ if __name__ == '__main__':
 	print dg.z
 	print dg.x
 	print dg.y
+
+	dg1 = DileGeometry(z=2,y=0,x=0)
+	print dg1.asDocument()
+
+	dg3 = DileGeometry(z=2,y=1,x=0)
+	print dg3.asDocument()
