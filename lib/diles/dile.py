@@ -2,7 +2,7 @@
 import os
 import pprint
 
-from numpy 		import linspace
+from numpy 			import linspace
 from numpy.ma 		import MaskedArray
 from netCDF4 		import Dataset
 from dilegeometry 	import DileGeometry
