@@ -7,13 +7,15 @@
     :license: Apache 2.0, see LICENSE for more details.
 """
 import json, sys, re, urllib, urllib2, socket, json, pydoc, cgi, os, time, inspect
-from hashlib import md5
+
+from hashlib  import md5
 from datetime import datetime
 from pymongo  import MongoClient
 
 from geojson import Feature, Point, FeatureCollection
 
-from diles.dilefactory import DileFactory
+from diles.dilefactory       import DileFactory
+from utils.querybuildermongo import QueryBuilderMongo
 
 from flask import Flask
 from flask import Response
@@ -110,13 +112,15 @@ app = Flask(__name__)
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
-    DATABASE='test',
-    COLLECTION_DILES='diles',
-    COLLECTION_FILES='files',
-    DEBUG=True,
-    SECRET_KEY='development key',
-    USERNAME='admin',
-    PASSWORD='default'
+    DATABASE         ='test',
+    COLLECTION_DILES ='diles',
+    COLLECTION_FILES ='files',
+    DEBUG            =True,
+    SECRET_KEY       ='development key',
+    USERNAME         ='admin',
+    PASSWORD         ='default'
+    LOCATION         = 'loc.geometry'
+    TIME             = 'time' 
 ))
 app.config.from_envvar('HYBRID_DILE_SERVER_SETTINGS', silent=True)
 
@@ -210,6 +214,7 @@ def index():
 @jsonp
 def discovery_dile_by_position(lon,lat):
     """Discovery the diles given a lon/lat position.
+    
     :param: time: time costraits
     :param: level: level costrains
     :param: vars: variables contraints
@@ -221,29 +226,14 @@ def discovery_dile_by_position(lon,lat):
 
     """
 
-    '''
-    old code
-    features=[]
-    diles=DileFactory.fromPoint(lon,lat)
-    for dile in diles:
-        features.append(dile.asFeature())
-    result=FeatureCollection(features)
-    return jsonify(result)
-    '''
+    qbm   = QueryBuilderMongo()
 
-    query = [{   
-                "loc.geometry":{ 
-                    "$geoIntersects" : { 
-                        "$geometry" : { 
-                            "type": "Point", "coordinates": [float(lon),float(lat)] 
-                        } 
-                    }
-		        }
-		     },
-             {"_id":0,"uri":1}
-            ]
+    query = qbm.queryIntersectPoint(app.config['LOCATION'], lon, lat)
 
-    return jsonify(query_diles_db(query))
+    qbm.addField(query)
+    qbm.addProjection({"_id": 0, "uri" : 1})
+
+    return jsonify(query_diles_db(qbm.getQuery()))
 
     
 
@@ -263,15 +253,14 @@ def discovery_dile_by_radius(lon,lat,radius):
 
     """
 
-    query = [{
-                "loc.geometry": {
-                    "$geoWithin": { "$centerSphere": [ [float(lon), float(lat)], float(radius)/(3963.2) ] }
-                }
-             },
-             {"_id":0,"uri":1}
-            ]
+    qbm = QueryBuilderMongo()
 
-    return jsonify(query_diles_db(query))
+    query = qbm.queryIntersectRadius(app.config['LOCATION'], lon, lat, radius)
+
+    qbm.addField(query)
+    qbm.addProjection({"_id": 0, "uri" : 1})
+
+    return jsonify(query_diles_db(qbm.getQuery()))
 
 
 
@@ -294,27 +283,23 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     time=request.args.get('time')
     level=request.args.get('level')
     vars=request.args.get('vars')
-    
-    query= [{
-                "loc.geometry": {
-                    "$geoIntersects": {
-                        "$geometry": {
-                            "type": "Polygon",
-                            "coordinates": [[
-                                [ float(minLon), float(minLat) ],
-                                [ float(minLon), float(maxLat) ],
-                                [ float(maxLon), float(maxLat) ],
-                                [ float(maxLon), float(minLat) ],
-                                [ float(minLon), float(minLat) ]
-                            ]]
-                        }
-                    }
-                }
-            },
-            {"_id":0,"uri":1}
-           ]
-    
-    return jsonify(query_diles_db(query))
+
+    bb = {
+            "lat_min": minLat,
+            "lat_max": maxLat,
+            "lon_min": minLon,
+            "lon_max": maxLon
+    }
+
+    qbm = QueryBuilderMongo()
+
+    query = bm.queryIntersectBbox(app.config['LOCATION'],bb)
+
+    qbm.addField(query)
+    qbm.addProjection({"_id": 0, "uri" : 1})
+
+
+    return jsonify(query_diles_db(qbm.getQuery()))
 
 def query_diles_db(query):
     
