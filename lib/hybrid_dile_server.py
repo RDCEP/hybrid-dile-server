@@ -304,12 +304,13 @@ def query_diles_db(query):
     
     db = get_db()
     result = []
+    '''
     cursor = db[app.config['COLLECTION_DILES']].find(query[0],query[1])
 
     for pointer in cursor:    
         result.append(pointer)
-
-    return result
+    '''
+    return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]))
 
 
 def query_files_db(query):
@@ -323,6 +324,11 @@ def query_files_db(query):
 
     return result
 
+
+def aggregate_diles_result(pipeline):
+
+    db = get_db()
+    result = []
 
 
 @app.route('/select/dile')
