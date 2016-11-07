@@ -245,7 +245,7 @@ def discovery_dile_by_radius(lon,lat,radius):
     :param: time: time costraits
     :param: level: level costrains
     :param: vars: variables contraints
-    :example: /discovery/dile/by/radius/-135.0/22.5/100.0
+    :example: /discovery/dile/by/radius/-135.0/22.5/5000.0
 
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
