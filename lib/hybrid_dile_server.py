@@ -292,7 +292,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
 
     qbm = QueryBuilderMongo()
 
-    query = bm.queryIntersectBbox(app.config['LOCATION'],bb)
+    query = qbm.queryIntersectBbox(app.config['LOCATION'],bb)
 
     qbm.addField(query)
     qbm.addProjection({"_id": 0, "uri" : 1})
