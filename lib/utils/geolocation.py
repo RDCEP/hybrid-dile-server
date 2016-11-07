@@ -48,14 +48,6 @@ class GeoLocation:
         self.deg_lat = float(deg_lat)
         self.deg_lon = float(deg_lon)
 
-        print self.rad_lat
-        print self.rad_lon
-        print GeoLocation.MIN_LAT
-        print GeoLocation.MAX_LAT
-        print GeoLocation.MIN_LON
-        print GeoLocation.MAX_LON
-
-
         self._check_bounds()
         
     def __str__(self):
