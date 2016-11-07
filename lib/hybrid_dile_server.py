@@ -228,7 +228,7 @@ def discovery_dile_by_position(lon,lat):
 
     qbm   = QueryBuilderMongo()
 
-    query = qbm.queryIntersectPoint(app.config['LOCATION'], lon, lat)
+    query = qbm.queryIntersectPoint(app.config['LOCATION'], float(lon), float(lat))
 
     qbm.addField(query)
     qbm.addProjection({"_id": 0, "uri" : 1})
@@ -254,7 +254,7 @@ def discovery_dile_by_radius(lon,lat,radius):
 
     qbm = QueryBuilderMongo()
 
-    query = qbm.queryIntersectRadius(app.config['LOCATION'], lon, lat, radius)
+    query = qbm.queryIntersectRadius(app.config['LOCATION'], float(lon), float(lat), float(radius))
 
     qbm.addField(query)
     qbm.addProjection({"_id": 0, "uri" : 1})
@@ -284,10 +284,10 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     vars=request.args.get('vars')
 
     bb = {
-            "lat_min": minLat,
-            "lat_max": maxLat,
-            "lon_min": minLon,
-            "lon_max": maxLon
+            "lat_min": float(minLat),
+            "lat_max": float(maxLat),
+            "lon_min": float(minLon),
+            "lon_max": float(maxLon)
     }
 
     qbm = QueryBuilderMongo()
