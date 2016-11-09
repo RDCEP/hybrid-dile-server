@@ -301,7 +301,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     return jsonify(query_diles_db(qbm.getQuery()))
 
 def query_diles_db(query):
-    
+
     db = get_db()
     return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]))
 
@@ -315,13 +315,13 @@ def query_files_db(query):
 def aggregate_result_diles(pipeline):
 
     db = get_db()
-    return list(db.[app.config['COLLECTION_DILES']].aggregate(pipeline))
+    return list(db[app.config['COLLECTION_DILES']].aggregate(pipeline))
 
 
 def aggregate_result_diles(pipeline):
 
     db = get_db()
-    return list(db.[app.config['COLLECTION_FILES']].aggregate(pipeline))
+    return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline))
 
 
 
