@@ -297,21 +297,27 @@ def test_url_decode():
      
     spatial = []
     if feature is not None:
+        
         if feature['geometry']['type'] == 'Point':
-            c       = feature['geometry']['coordinates']
-            spatial.append(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))
+
+            print "hello"
+            c = feature['geometry']['coordinates']
+            spatial.append(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
         
         elif feature['geometry']['type'] == 'Polygon':
-            bb      = polyToBB(feature) 
+        
+            bb = polyToBB(feature) 
             spatial.append(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
 
         else:
-            return "ERROR: feature not recognized"
+            pass
 
     other = []
     if dimentions is not None:
         for dim in dimentions:
+            
             d = dimentions[dim]
+            
             if dim.lower() == 'time':           
                 other.append(qbm.queryTimeRange(app.config['LOCATION'],d[0],d[1]))
             else:
