@@ -87,8 +87,6 @@ class NetcdfGeometry(object):
 		else:
 				print "Not enough values for Latitude and/or Longitude"
 
-	
-
 if __name__ == '__main__':
 	
 	ncg = NetcdfGeometry()
