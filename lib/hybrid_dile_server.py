@@ -284,7 +284,7 @@ def index():
 def test_url_decode():
 
     param     = getUrlParam('query')
-    jstring   = json.loads(json.dumps(param).lower())
+    jstring   = json.loads(json.dumps(param))
     item      = literal_eval(jstring)
 
     qbm = QueryBuilderMongo()
