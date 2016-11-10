@@ -234,7 +234,8 @@ def test_url_decode():
     if dimentions is not None:
         if type(dimentions['time']) is type(list): 
             test['time'] = 'OK'
-    
+        else:
+            print type(dimentions['time'])
     
     return jsonify(test)
     
