@@ -221,6 +221,11 @@ def test_url_decode():
     item      = literal_eval(jstring)
 
     print "----------JSTRING------------"
+    print param
+    print "type: ",type(param)
+    print "------------------------------"
+
+    print "----------JSTRING------------"
     print jstring
     print "type: ",type(jstring)
     print "------------------------------"
@@ -230,9 +235,7 @@ def test_url_decode():
     print "type: ",type(item)
     print "------------------------------"
 
-    test = {'a':'b'}
-    print type(test)
-    print type(literal_eval("{'a':'b'}"))
+
     '''
     dimentions = getKeyValue(item, 'dimensions') 
     feature = getKeyValue(item, 'feature')
