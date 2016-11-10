@@ -215,15 +215,22 @@ def index():
 
 @app.route('/interrogation')
 def test_url_decode():
+
     param  = getUrlParam('query')
-    parsed = parse_qsl(param)
+    item   = json.dumps(param)
 
-    print json.dumps(param)
+    dimentions = getKeyValue(item, 'dimensions') 
+    feature = getKeyValue(item, 'feature')
+    test = {} 
 
-    return jsonify(param)
+    if feature in not None:
+        test['feature'] = 'OK'
+
+    if dimentions is not None:
+        test['dimensions'] = 'OK'
+
+    return jsonify(test)
     
-
-    return parsed
 
 
 @app.route('/discovery/dile/by/position/<lon>/<lat>')
