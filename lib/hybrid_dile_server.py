@@ -229,11 +229,11 @@ def test_url_decode():
 
     if feature is not None:
         if feature['geometry']['type'] == 'Point':
-        test['point'] = 'OK'
+            test['point'] = 'OK'
 
     if dimentions is not None:
         if type(dimentions['time']) is type(list): 
-        test['time'] = 'OK'
+            test['time'] = 'OK'
     
     
     return jsonify(test)
