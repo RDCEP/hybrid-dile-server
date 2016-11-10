@@ -223,7 +223,7 @@ def test_url_decode():
     feature = getKeyValue(item, 'feature')
     test = {} 
 
-    if feature in not None:
+    if feature is not None:
         test['feature'] = 'OK'
 
     if dimentions is not None:
