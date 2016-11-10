@@ -218,7 +218,7 @@ def test_url_decode():
 
     param     = getUrlParam('query')
     jstring   = json.dumps(param)
-    item      = literal_eval(jstring)
+    item      = dict(literal_eval(jstring))
 
     print item
     print type(item)
