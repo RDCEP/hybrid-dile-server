@@ -151,6 +151,73 @@ def init_db():
     """Initializes the database."""
     db = get_db()
 
+def query_diles_db(query):
+
+    db = get_db()
+    return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]))
+
+
+def query_files_db(query):
+
+    db = get_db()
+    return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1]))
+
+
+def aggregate_result_diles(pipeline):
+
+    db = get_db()
+    return list(db[app.config['COLLECTION_DILES']].aggregate(pipeline))
+
+
+def aggregate_result_diles(pipeline):
+
+    db = get_db()
+    return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline))
+
+
+def getUrlParam(name):
+  
+  value=None
+  
+  try:
+    value=request.args.get(name)
+  except:
+    pass
+  if value is None:
+    try:
+      value=request.form[name]
+    except:    
+      pass
+
+  return value
+
+
+def getKeyValue(dictionary,param):
+
+    if param in dictionary:
+        return dictionary[param]
+    
+    else:
+        for key in dictionary:
+            if type(dictionary.get(key)) == type(dict()):
+                return getKeyValue(dictionary.get(key),param)
+
+    return None
+
+
+def polyToBB(feature):
+    
+    coords  = feature['geometry']['coordinates']
+    
+    bb = {
+            "lon_min" : float(coords[0][0]),
+            "lon_max" : float(coords[2][0]),
+            "lat_min" : float(coords[0][1]),
+            "lat_max" : float(coords[2][1])
+         }
+    
+    return bb
+
 
 @app.cli.command('initdb')
 def initdb_command():
@@ -217,27 +284,44 @@ def index():
 def test_url_decode():
 
     param     = getUrlParam('query')
-    jstring   = json.loads(json.dumps(param))
+    jstring   = json.loads(json.dumps(param).lower())
     item      = literal_eval(jstring)
 
-    test = {}
+    qbm = QueryBuilderMongo()
+    
+    query = None
 
     
     dimentions = getKeyValue(item, 'dimensions') 
     feature = getKeyValue(item, 'feature')
      
-
+    spatial = []
     if feature is not None:
         if feature['geometry']['type'] == 'Point':
-            test['point'] = 'OK'
+            c       = feature['geometry']['coordinates']
+            spatial.append(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))
+        
+        elif feature['geometry']['type'] == 'Polygon':
+            bb      = polyToBB(feature) 
+            spatial.append(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
 
-    if dimentions is not None:
-        if type(dimentions['time']) is type(list): 
-            test['time'] = 'OK'
         else:
-            print type(dimentions['time'])
+            return "ERROR: feature not recognized"
+
+    other = []
+    if dimentions is not None:
+        for dim in dimentions:
+            d = dimentions[dim]
+            if dim.lower() == 'time':           
+                other.append(qbm.queryTimeRange(app.config['LOCATION'],d[0],d[1]))
+            else:
+                other.append(qbm.queryRange(app.config['LOCATION'],d[0],d[1]))
+
+
+    query = spatial+other
+        
     
-    return jsonify(test)
+    return jsonify(query)
     
 
 
@@ -330,61 +414,6 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
 
 
     return jsonify(query_diles_db(qbm.getQuery()))
-
-def query_diles_db(query):
-
-    db = get_db()
-    return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]))
-
-
-def query_files_db(query):
-
-    db = get_db()
-    return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1]))
-
-
-def aggregate_result_diles(pipeline):
-
-    db = get_db()
-    return list(db[app.config['COLLECTION_DILES']].aggregate(pipeline))
-
-
-def aggregate_result_diles(pipeline):
-
-    db = get_db()
-    return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline))
-
-
-def getUrlParam(name):
-  
-  value=None
-  
-  try:
-    value=request.args.get(name)
-  except:
-    pass
-  if value is None:
-    try:
-      value=request.form[name]
-    except:    
-      pass
-
-  return value
-
-
-def getKeyValue(dictionary,param):
-
-    if param in dictionary:
-        return dictionary[param]
-    
-    else:
-        for key in dictionary:
-            if type(dictionary.get(key)) == type(dict()):
-                return getKeyValue(dictionary.get(key),param)
-
-    return None
-
-
 
 
 
