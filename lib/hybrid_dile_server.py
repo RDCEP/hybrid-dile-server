@@ -335,7 +335,7 @@ def getParam(name):
   value=None
   
   try:
-    value=request.args.get(name, None)
+    value=request.args.get(name)
   except:
     pass
   if value is None:
