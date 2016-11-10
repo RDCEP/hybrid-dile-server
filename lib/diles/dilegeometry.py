@@ -119,11 +119,22 @@ class DileGeometry(object):
 
 		return doc
 
+
+	def getIndex(self,lon,lat):
+
+		bb 	  = self.asBoundingBox()
+		gamma = 1/float(2**self.z)
+
+		x = (lon - bb['lon_min'])/gamma
+		y = (lat - bb['lat_min'])/gamma
+		
+		return x,y
+
 if __name__ == '__main__':
 	
 
-	dg1 = DileGeometry(z=2,y=1,x=0)
-	print dg1.asDocument()
+	dg1 = DileGeometry(z=0,y=0,x=0)
+	#print dg1.asDocument()
 
-	dg2 = DileGeometry(z=2,y=0,x=1)
-	print dg2.asDocument()
+	dg2 = DileGeometry(z=1,y=1,x=0)
+	#print dg2.asDocument()
