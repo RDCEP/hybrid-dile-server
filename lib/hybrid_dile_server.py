@@ -216,10 +216,24 @@ def index():
 @app.route('/interrogation')
 def test_url_decode():
 
-    param   = getUrlParam('query')
-    item    = json.loads(json.dumps(param))   
+    param     = getUrlParam('query')
+    jstring   = json.loads(json.dumps(param))
+    item      = literal_eval(jstring)
 
-    print type(item)
+    print "----------PARAM------------"
+    print param
+    print "type: ",type(param)
+    print "------------------------------"
+
+    print "----------JSTRING------------"
+    print jstring
+    print "type: ",type(jstring)
+    print "------------------------------"
+
+    print "----------ITEM------------"
+    print item
+    print "type: ",type(item)
+    print "------------------------------"
 
     test = {}
 
@@ -233,6 +247,7 @@ def test_url_decode():
 
     if dimentions is not None:
         test['dimensions'] = 'OK'
+    
     '''
     return jsonify(test)
     
