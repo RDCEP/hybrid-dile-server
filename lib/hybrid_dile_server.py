@@ -217,10 +217,10 @@ def index():
 def test_url_decode():
 
     param     = getUrlParam('query')
-    jstring   = json.dumps(param)
+    jstring   = json.load(param)
     item      = literal_eval(jstring)
 
-    print "----------JSTRING------------"
+    print "----------PARAM------------"
     print param
     print "type: ",type(param)
     print "------------------------------"
@@ -235,6 +235,7 @@ def test_url_decode():
     print "type: ",type(item)
     print "------------------------------"
 
+    test = {}
 
     '''
     dimentions = getKeyValue(item, 'dimensions') 
