@@ -297,19 +297,16 @@ def test_url_decode():
      
     spatial = []
     if feature is not None:
-
-        print "hello"
-        print feature
         
         if feature['geometry']['type'] == 'Point':
 
             c = feature['geometry']['coordinates']
-            spatial.append(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
+            qbm.addField(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
         
         elif feature['geometry']['type'] == 'Polygon':
         
             bb = polyToBB(feature) 
-            spatial.append(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
+            qbm.addField(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
 
         else:
             pass
@@ -321,15 +318,13 @@ def test_url_decode():
             d = dimentions[dim]
             
             if dim.lower() == 'time':           
-                other.append(qbm.queryTimeRange(dim.lower(),d[0],d[1]))
+                qbm.addField(qbm.queryTimeRange(dim.lower(),d[0],d[1]))
             else:
-                other.append(qbm.queryRange(dim.lower(),d[0],d[1]))
+                qbm.addField(qbm.queryRange(dim.lower(),d[0],d[1]))
 
+    qbm.addProjection({"_id": 0, "uri" : 1})
 
-    query = spatial+other
-        
-    
-    return jsonify(query)
+    return jsonify(query_diles_db(qbm.getQuery()))
     
 
 
