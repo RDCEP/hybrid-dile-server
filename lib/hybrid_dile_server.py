@@ -217,7 +217,7 @@ def index():
 def test_url_decode():
 
     param     = getUrlParam('query')
-    jstring   = json.load(json.dumps(param))
+    jstring   = json.loads(json.dumps(param))
     item      = literal_eval(jstring)
 
     print "----------PARAM------------"
