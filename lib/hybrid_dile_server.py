@@ -207,16 +207,32 @@ def index():
                         pass
     return render_template('layout.html',actions=actions)
 
+
+
 """
 -------------------------------------------------------------------------------------------
 """
 
-@app.route('/test/url')
+@app.route('/interrogation')
 def test_url_decode():
     param = getUrlParam('query')
     json  = jsonify(param)
 
-    
+    time = getKeyValue(json, 'time')
+    loc  = getKeyValue(json, 'loc' )
+
+    s = {
+            {
+             "time": time,
+             "type": type(time)
+            },
+            {
+             "loc": loc,
+             "type": type(loc)
+            }
+        }
+
+    return jsonify(s)
 
 
 
@@ -360,6 +376,8 @@ def getKeyValue(dictionary,param):
         for key in dictionary:
             if type(dictionary.get(key)) == type(dict()):
                 return getKeyValue(dictionary.get(key),param)
+
+    return None
 
 
 
