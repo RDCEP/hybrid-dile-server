@@ -213,8 +213,12 @@ def index():
 
 @app.route('/test/url')
 def test_url_decode():
-    param = getParam('query')
-    return jsonify(param)
+    param = getUrlParam('query')
+    json  = jsonify(param)
+
+    
+
+
 
 @app.route('/discovery/dile/by/position/<lon>/<lat>')
 @jsonp
@@ -330,7 +334,7 @@ def aggregate_result_diles(pipeline):
     return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline))
 
 
-def getParam(name):
+def getUrlParam(name):
   
   value=None
   
@@ -347,7 +351,15 @@ def getParam(name):
   return value
 
 
+def getKeyValue(dictionary,param):
 
+    if param in dictionary:
+        return dictionary[param]
+    
+    else:
+        for key in dictionary:
+            if type(dictionary.get(key)) == type(dict()):
+                return getKeyValue(dictionary.get(key),param)
 
 
 
