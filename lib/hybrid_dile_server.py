@@ -213,8 +213,8 @@ def index():
 
 @app.route('/test/url')
 def test_url_decode():
-    query = getParam('query')
-    return parse_qsl(query)
+    param = getParam('query')
+    return jsonify(param)
 
 @app.route('/discovery/dile/by/position/<lon>/<lat>')
 @jsonp
