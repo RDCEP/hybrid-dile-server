@@ -220,6 +220,16 @@ def test_url_decode():
     jstring   = json.dumps(param)
     item      = literal_eval(jstring)
 
+    print "----------JSTRING------------"
+    print jstring
+    print "type: ",type(jstring)
+    print "------------------------------"
+
+    print "----------ITEM------------"
+    print item
+    print "type: ",type(item)
+    print "------------------------------"
+
     test = {}
 
     
