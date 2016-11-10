@@ -12,7 +12,8 @@ from hashlib  import md5
 from datetime import datetime
 from pymongo  import MongoClient
 
-from geojson import Feature, Point, FeatureCollection
+from geojson  import Feature, Point, FeatureCollection
+from urlparse import parse_qsl
 
 from diles.dilefactory       import DileFactory
 from utils.querybuildermongo import QueryBuilderMongo
@@ -210,6 +211,11 @@ def index():
 -------------------------------------------------------------------------------------------
 """
 
+@app.route('/test/url')
+def test_url_decode():
+    query = getParam('query')
+    return parse_qsl(query)
+
 @app.route('/discovery/dile/by/position/<lon>/<lat>')
 @jsonp
 def discovery_dile_by_position(lon,lat):
@@ -322,6 +328,28 @@ def aggregate_result_diles(pipeline):
 
     db = get_db()
     return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline))
+
+
+def getParam(name):
+  
+  value=None
+  
+  try:
+    value=request.args.get(name, None)
+  except:
+    pass
+  if value is None:
+    try:
+      value=request.form[name]
+    except:    
+      pass
+
+  return value
+
+
+
+
+
 
 
 
