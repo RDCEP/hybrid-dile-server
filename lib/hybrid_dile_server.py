@@ -218,8 +218,7 @@ def test_url_decode():
     param  = getUrlParam('query')
     parsed = parse_qsl(param)
 
-    print parsed
-    print type(parsed)
+    print json.dumps(param)
 
     return jsonify(param)
     
