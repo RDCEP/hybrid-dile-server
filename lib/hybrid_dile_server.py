@@ -218,9 +218,9 @@ def test_url_decode():
     param = getUrlParam('query')
     json  = jsonify(param)
 
-    print json
-    print type(json)
-
+    print param
+    print type(param)
+    '''
     time = getKeyValue(json, 'time')
     loc  = getKeyValue(json, 'loc' )
 
@@ -236,7 +236,7 @@ def test_url_decode():
         }
 
     return jsonify(s)
-
+    '''
 
 
 @app.route('/discovery/dile/by/position/<lon>/<lat>')
