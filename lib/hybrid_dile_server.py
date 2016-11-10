@@ -297,10 +297,12 @@ def test_url_decode():
      
     spatial = []
     if feature is not None:
+
+        print "hello"
+        print feature
         
         if feature['geometry']['type'] == 'Point':
 
-            print "hello"
             c = feature['geometry']['coordinates']
             spatial.append(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
         
@@ -319,9 +321,9 @@ def test_url_decode():
             d = dimentions[dim]
             
             if dim.lower() == 'time':           
-                other.append(qbm.queryTimeRange(app.config['LOCATION'],d[0],d[1]))
+                other.append(qbm.queryTimeRange(dim.lower(),d[0],d[1]))
             else:
-                other.append(qbm.queryRange(app.config['LOCATION'],d[0],d[1]))
+                other.append(qbm.queryRange(dim.lower(),d[0],d[1]))
 
 
     query = spatial+other
