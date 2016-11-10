@@ -220,23 +220,9 @@ def test_url_decode():
 
     print parsed
     print type(parsed)
-    '''
-    time = getKeyValue(json, 'time')
-    loc  = getKeyValue(json, 'loc' )
 
-    s = {
-            {
-             "time": time,
-             "type": type(time)
-            },
-            {
-             "loc": loc,
-             "type": type(loc)
-            }
-        }
-
-    return jsonify(s)
-    '''
+    return jsonify(param)
+    
 
     return parsed
 
