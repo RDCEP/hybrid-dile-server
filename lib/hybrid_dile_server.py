@@ -13,7 +13,7 @@ from datetime import datetime
 from pymongo  import MongoClient
 
 from geojson  import Feature, Point, FeatureCollection
-from urlparse import parse_qsl
+from ast      import literal_eval
 
 from diles.dilefactory       import DileFactory
 from utils.querybuildermongo import QueryBuilderMongo
@@ -216,8 +216,9 @@ def index():
 @app.route('/interrogation')
 def test_url_decode():
 
-    param  = getUrlParam('query')
-    item   = json.dumps(param)
+    param     = getUrlParam('query')
+    jstring   = json.dumps(param)
+    item      = literal_eval(jstring)
 
     print item
     print type(item)
@@ -235,7 +236,7 @@ def test_url_decode():
     if dimentions is not None:
         test['dimensions'] = 'OK'
     '''
-    
+
     return jsonify(test)
     
 
