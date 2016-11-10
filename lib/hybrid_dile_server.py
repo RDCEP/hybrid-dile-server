@@ -219,16 +219,23 @@ def test_url_decode():
     param  = getUrlParam('query')
     item   = json.dumps(param)
 
+    print item
+    print type(item)
+
+    test = {}
+
+    '''
     dimentions = getKeyValue(item, 'dimensions') 
     feature = getKeyValue(item, 'feature')
-    test = {} 
+     
 
     if feature is not None:
         test['feature'] = 'OK'
 
     if dimentions is not None:
         test['dimensions'] = 'OK'
-
+    '''
+    
     return jsonify(test)
     
 
