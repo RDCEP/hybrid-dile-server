@@ -228,10 +228,10 @@ def test_url_decode():
     print "----------ITEM------------"
     print item
     print "type: ",type(item)
-    print item['dimensions']
     print "------------------------------"
 
-    test = {}
+    test = {'a':'b'}
+    print type(test)
 
     '''
     dimentions = getKeyValue(item, 'dimensions') 
