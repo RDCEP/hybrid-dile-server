@@ -232,7 +232,7 @@ def test_url_decode():
 
     test = {'a':'b'}
     print type(test)
-
+    print type(literal_eval("{'a':'b'}"))
     '''
     dimentions = getKeyValue(item, 'dimensions') 
     feature = getKeyValue(item, 'feature')
