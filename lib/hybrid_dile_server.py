@@ -218,6 +218,9 @@ def test_url_decode():
     param = getUrlParam('query')
     json  = jsonify(param)
 
+    print json
+    print type(json)
+
     time = getKeyValue(json, 'time')
     loc  = getKeyValue(json, 'loc' )
 
