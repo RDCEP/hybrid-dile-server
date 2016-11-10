@@ -228,11 +228,12 @@ def test_url_decode():
     print "----------ITEM------------"
     print item
     print "type: ",type(item)
+    print item['dimensions']
     print "------------------------------"
 
     test = {}
 
-    
+    '''
     dimentions = getKeyValue(item, 'dimensions') 
     feature = getKeyValue(item, 'feature')
      
@@ -243,7 +244,7 @@ def test_url_decode():
     if dimentions is not None:
         test['dimensions'] = 'OK'
     
-
+    '''
     return jsonify(test)
     
 
