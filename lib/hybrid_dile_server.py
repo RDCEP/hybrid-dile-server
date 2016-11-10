@@ -215,11 +215,11 @@ def index():
 
 @app.route('/interrogation')
 def test_url_decode():
-    param = getUrlParam('query')
-    json  = jsonify(param)
+    param  = getUrlParam('query')
+    parsed = parse_qsl(param)
 
-    print param
-    print type(param)
+    print parsed
+    print type(parsed)
     '''
     time = getKeyValue(json, 'time')
     loc  = getKeyValue(json, 'loc' )
