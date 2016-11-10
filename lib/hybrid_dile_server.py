@@ -238,6 +238,8 @@ def test_url_decode():
     return jsonify(s)
     '''
 
+    return parsed
+
 
 @app.route('/discovery/dile/by/position/<lon>/<lat>')
 @jsonp
