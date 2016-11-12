@@ -219,6 +219,13 @@ def polyToBB(feature):
     return bb
 
 
+def paramToJson(param):
+    jstring   = json.loads(json.dumps(param))
+    item      = literal_eval(jstring)
+
+    return item
+
+
 @app.cli.command('initdb')
 def initdb_command():
     """Creates the database tables."""
@@ -280,20 +287,29 @@ def index():
 -------------------------------------------------------------------------------------------
 """
 
-@app.route('/interrogation')
-def test_url_decode():
+@app.route('/multidimensional')
+def multidimensional_query():
 
-    param     = getUrlParam('query')
-    jstring   = json.loads(json.dumps(param))
-    item      = literal_eval(jstring)
+    """Discovery the diles given a Feature (Point or Polygon) and a vector
+    of dimensions, using an encoded geojson document
 
-    qbm = QueryBuilderMongo()
+    :param: dimensions: json document
+    :param: feature:   vector of inner documents
+    :example: /multidimensions
+
+    :returns:  geojson -- the return a feature collection with the selected diles.
+    -------------------------------------------------------------------------------------------
+    """
+
+    qbm = QueryBjuilderMongo()
+
+    f_param = getUrlParam('feature')
+    feature = paramToJson(f_param)
+
+    d_param    = getUrlParam('dimensions')
+    dimensions = paramToJson(d_param)
     
     query = None
-
-    
-    dimentions = getKeyValue(item, 'dimensions') 
-    feature = getKeyValue(item, 'feature')
      
     spatial = []
     if feature is not None:
@@ -311,9 +327,11 @@ def test_url_decode():
         else:
             pass
 
+
     other = []
     if dimentions is not None:
-        for dim in dimentions:
+
+        for dim in dimentions:            
             
             d = dimentions[dim]
             
