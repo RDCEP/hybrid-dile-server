@@ -290,12 +290,11 @@ def index():
 @app.route('/multidimensional')
 def multidimensional_query():
 
-    """Discovery the diles given a Feature (Point or Polygon) and a vector
-    of dimensions, using an encoded geojson document
+    """Discovery the diles given a Feature (Point or Polygon) and additional dimensions
 
     :param: dimensions: json document
     :param: feature:   vector of inner documents
-    :example: /multidimensions
+    :example: /multidimensions/
 
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
@@ -306,12 +305,13 @@ def multidimensional_query():
     f_param = getUrlParam('feature')
     feature = paramToJson(f_param)
 
+    print feature
+
     d_param    = getUrlParam('dimensions')
     dimensions = paramToJson(d_param)
     
-    query = None
+    print dimensions
      
-    spatial = []
     if feature is not None:
         
         if feature['geometry']['type'] == 'Point':
@@ -328,7 +328,6 @@ def multidimensional_query():
             pass
 
 
-    other = []
     if dimentions is not None:
 
         for dim in dimentions:            
