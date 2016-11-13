@@ -300,7 +300,7 @@ def multidimensional_query():
     -------------------------------------------------------------------------------------------
     """
 
-    qbm = QueryBjuilderMongo()
+    qbm = QueryBuilderMongo()
 
     f_param = getUrlParam('feature')
     feature = paramToJson(f_param)
