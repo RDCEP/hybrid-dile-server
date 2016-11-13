@@ -339,7 +339,7 @@ def multidimensional_query():
 
     :param: dimensions: json document (ex: {dimensions:{'time':['1980-01-01-00:00:00','1980-01-01-00:00:00']}})
     :param: feature:    json feature  (ex: {'feature': {'geometry': {'type': 'Point', 'coordinates': [-90, 42.293564192170095]}, 'type': 'Feature', 'properties': {}}})
-    :example: /multidimensional?feature=geometry={'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}&type=Feature&properties={}&dimensions=time=['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']
+    :example: /multidimensional?feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}&dimensions={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}
     :returns:  geojson -- return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
     """
