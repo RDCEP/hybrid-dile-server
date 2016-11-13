@@ -6,7 +6,7 @@
     :copyright: (c) 2016 by Raffaele Montella & Sergio Apreda.
     :license: Apache 2.0, see LICENSE for more details.
 """
-import json, sys, re, urllib, urllib2, socket, json, pydoc, cgi, os, time, inspect
+import  geojson, json, sys, re, urllib, urllib2, socket, json, pydoc, cgi, os, time, inspect
 
 from hashlib  import md5
 from datetime import datetime
@@ -219,17 +219,25 @@ def polyToBB(feature):
     return bb
 
 
-def paramToJson(param):
-    
-    jstring   = json.loads(json.dumps(param))
+def jsonToDict(param):
     
     try:
+        jstring   = json.loads(json.dumps(param))
+        item      = literal_eval(jstring)
+    except:
+        return None
+    else:
+        return item
+
+def geojsonToDict(param):
+
+    try:
+        jstring   = geojson.loads(geojson.dumps(param))
         item = literal_eval(jstring)
     except:
-        item = None
-    
-    return item
-
+        return None
+    else:
+        return item  
 
 def getDimentions(dimensions, qbm):
 
@@ -331,8 +339,7 @@ def multidimensional_query():
 
     :param: dimensions: json document (ex: {dimensions:{'time':['1980-01-01-00:00:00','1980-01-01-00:00:00']}})
     :param: feature:    json feature  (ex: {'feature': {'geometry': {'type': 'Point', 'coordinates': [-90, 42.293564192170095]}, 'type': 'Feature', 'properties': {}}})
-    :example: /multidimensional?dimensions={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}&feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
-
+    :example: /multidimensional??feature=geometry=%7B%27type%27%3A+%27Point%27%2C+%27coordinates%27%3A+%5B-90%2C+42.293564192170095%5D%7D&type=Feature&properties=%7B%7D&dimensions=geometry=%7B%27type%27%3A+%27Point%27%2C+%27coordinates%27%3A+%5B-90%2C+42.293564192170095%5D%7D&type=Feature&properties=%7B%7D
     :returns:  geojson -- return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
     """
@@ -344,16 +351,19 @@ def multidimensional_query():
     
      
     if f_param is not None:
-        feature = paramToJson(f_param)       
+        feature = geojsonToDict(f_param)       
         if feature is not None:
             qbm = getFeature(feature, qbm)
-
+        else:
+            return "ERROR: -feature- invalid geojson syntax"
 
 
     if d_param is not None:
-        dimensions = paramToJson(d_param)
+        dimensions = jsonToDict(d_param)
         if dimensions is not None:
             qbm = getDimentions(dimensions, qbm)
+        else:
+            return "ERROR: -dimensions- invalid json syntax"
 
     qbm.addProjection({"_id": 0, "uri" : 1})
 
