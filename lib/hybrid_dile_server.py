@@ -293,7 +293,7 @@ def multidimensional_query():
     """Discovery the diles given a Feature (Point or Polygon) and additional dimensions
 
     :param: dimensions: json document
-    :param: feature:   vector of inner documents
+    :param: feature:    json feature
     :example: /multidimensional?dimensions={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}&feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
 
     :returns:  geojson -- the return a feature collection with the selected diles.
@@ -328,16 +328,17 @@ def multidimensional_query():
             pass
 
 
-    if dimentions is not None:
+    if dimensions is not None:
 
-        for dim in dimentions:            
+        for dim in dimensions:            
             
-            d = dimentions[dim]
+            d = dimensions[dim]
             
             if dim.lower() == 'time':           
                 qbm.addField(qbm.queryTimeRange(dim.lower(),d[0],d[1]))
             else:
                 qbm.addField(qbm.queryRange(dim.lower(),d[0],d[1]))
+
 
     qbm.addProjection({"_id": 0, "uri" : 1})
 
