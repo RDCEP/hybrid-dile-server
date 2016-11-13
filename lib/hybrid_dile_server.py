@@ -220,11 +220,48 @@ def polyToBB(feature):
 
 
 def paramToJson(param):
+    
     jstring   = json.loads(json.dumps(param))
-    item      = literal_eval(jstring)
-
+    
+    try:
+        item = literal_eval(jstring)
+    except:
+        item = None
+    
     return item
 
+
+def getDimentions(dimensions, qbm):
+
+    if dimensions is not None:
+        
+        for dim in dimensions:            
+            
+            d = dimensions[dim]
+            
+            if dim.lower() == 'time':           
+                qbm.addField(qbm.queryTimeRange(dim.lower(),d[0],d[1]))
+            else:
+                qbm.addField(qbm.queryRange(dim.lower(),d[0],d[1]))
+
+    return qbm
+
+
+def getFeature(feature, qbm):
+
+    if feature['geometry']['type'] == 'Point':
+
+        c = feature['geometry']['coordinates']
+        qbm.addField(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
+    
+    elif feature['geometry']['type'] == 'Polygon':
+    
+        bb = polyToBB(feature) 
+        qbm.addField(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
+    else:
+        pass
+
+    return qbm
 
 @app.cli.command('initdb')
 def initdb_command():
@@ -292,53 +329,31 @@ def multidimensional_query():
 
     """Discovery the diles given a Feature (Point or Polygon) and additional dimensions
 
-    :param: dimensions: json document
-    :param: feature:    json feature
+    :param: dimensions: json document (ex: {dimensions:{'time':['1980-01-01-00:00:00','1980-01-01-00:00:00']}})
+    :param: feature:    json feature  (ex: {'feature': {'geometry': {'type': 'Point', 'coordinates': [-90, 42.293564192170095]}, 'type': 'Feature', 'properties': {}}})
     :example: /multidimensional?dimensions={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}&feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
 
-    :returns:  geojson -- the return a feature collection with the selected diles.
+    :returns:  geojson -- return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
     """
 
     qbm = QueryBuilderMongo()
 
-    f_param = getUrlParam('feature')
-    feature = paramToJson(f_param)
-
-    print feature
-
+    f_param = getUrlParam('feature')    
     d_param    = getUrlParam('dimensions')
-    dimensions = paramToJson(d_param)
     
-    print dimensions
      
-    if feature is not None:
-        
-        if feature['geometry']['type'] == 'Point':
-
-            c = feature['geometry']['coordinates']
-            qbm.addField(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
-        
-        elif feature['geometry']['type'] == 'Polygon':
-        
-            bb = polyToBB(feature) 
-            qbm.addField(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
-
-        else:
-            pass
+    if f_param is not None:
+        feature = paramToJson(f_param)       
+        if feature is not None:
+            qbm = getFeature(feature, qbm)
 
 
-    if dimensions is not None:
 
-        for dim in dimensions:            
-            
-            d = dimensions[dim]
-            
-            if dim.lower() == 'time':           
-                qbm.addField(qbm.queryTimeRange(dim.lower(),d[0],d[1]))
-            else:
-                qbm.addField(qbm.queryRange(dim.lower(),d[0],d[1]))
-
+    if d_param is not None:
+        dimensions = paramToJson(d_param)
+        if dimensions is not None:
+            qbm = getDimentions(dimensions, qbm)
 
     qbm.addProjection({"_id": 0, "uri" : 1})
 
@@ -350,10 +365,6 @@ def multidimensional_query():
 @jsonp
 def discovery_dile_by_position(lon,lat):
     """Discovery the diles given a lon/lat position.
-    
-    :param: time: time costraits
-    :param: level: level costrains
-    :param: vars: variables contraints
 
     :example: /discovery/dile/by/position/-135.0/22.5
 
@@ -414,10 +425,6 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     -------------------------------------------------------------------------------------------
 
     """
-
-    time=request.args.get('time')
-    level=request.args.get('level')
-    vars=request.args.get('vars')
 
     bb = {
             "lat_min": float(minLat),
