@@ -366,8 +366,10 @@ def test():
 
     param = getUrlParam('var')
 
+    print param
+
     var = uvarToVar(param) 
-    print var
+
     #qbm = getVariables(var, qbm)
 
     #return jsonify(qbm.getQuery())
