@@ -372,12 +372,11 @@ def test():
     
     qbm = QueryBuilderMongo()
 
-    var = request.args.getlist('var')
+    var = getUrlParam('var')
 
-    test = { 'var' : var,
-            'type' : type(var)
+    lis = getUrlParam('lis')
 
-    }
+    test = {{'var': var, 'type': str(type(var))} {'list': lis, 'type': str(type(lis[0]))}}
 
     #qbm = getVariables(var, qbm)
 
