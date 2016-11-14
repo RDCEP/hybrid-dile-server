@@ -332,14 +332,24 @@ def index():
 -------------------------------------------------------------------------------------------
 """
 
-@app.route('/multidimensional')
-def multidimensional_query():
+@app.route('/test')
+def test():
+    var = getUrlParam('var')
 
-    """Discovery the diles given a Feature (Point or Polygon) and additional dimensions
+    struct = {  "var": var,
+                "type": type(var)
+    }
 
-    :param: dimensions: json document (ex: {dimensions:{'time':['1980-01-01-00:00:00','1980-01-01-00:00:00']}})
-    :param: feature:    json feature  (ex: {'feature': {'geometry': {'type': 'Point', 'coordinates': [-90, 42.293564192170095]}, 'type': 'Feature', 'properties': {}}})
-    :example: /multidimensional?feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}&dimensions={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}
+    return jsonify(struct)
+
+
+@app.route('/discovery/dile/by/feature')
+def discovery_dile_by_feature():
+
+    """Discovery the diles given a Feature (Point or Polygon)
+ 
+    :param: feature:    json feature  
+    :example: /discovery/dile/by/feature?feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
     :returns:  geojson -- return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
     """
@@ -347,11 +357,8 @@ def multidimensional_query():
     qbm = QueryBuilderMongo()
 
     f_param = getUrlParam('feature')    
-    d_param    = getUrlParam('dimensions')
-    
-    print "fparam: ", f_param
-    print "dparam: ", d_param
-     
+    d_param = getUrlParam('dimensions')
+
     if f_param is not None:
         feature = geojsonToDict(f_param)       
         if feature is not None:
@@ -379,13 +386,22 @@ def discovery_dile_by_position(lon,lat):
     """Discovery the diles given a lon/lat position.
 
     :example: /discovery/dile/by/position/-135.0/22.5
-
+    :param: dimensions: json document
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
     """
 
     qbm   = QueryBuilderMongo()
+
+    d_param = getUrlParam('dimensions')
+
+    if d_param is not None:
+        dimensions = jsonToDict(d_param)
+    if dimensions is not None:
+        qbm = getDimentions(dimensions, qbm)
+    else:
+        return "ERROR: -dimensions- invalid json syntax" 
 
     query = qbm.queryIntersectPoint(app.config['LOCATION'], float(lon), float(lat))
 
@@ -401,9 +417,6 @@ def discovery_dile_by_position(lon,lat):
 def discovery_dile_by_radius(lon,lat,radius):
     """Discovery the diles given a center point by lon/lat and a radius in km.
 
-    :param: time: time costraits
-    :param: level: level costrains
-    :param: vars: variables contraints
     :example: /discovery/dile/by/radius/-135.0/22.5/5000.0
 
     :returns:  geojson -- the return a feature collection with the selected diles.
@@ -412,6 +425,15 @@ def discovery_dile_by_radius(lon,lat,radius):
     """
 
     qbm = QueryBuilderMongo()
+
+    d_param = getUrlParam('dimensions')
+
+    if d_param is not None:
+        dimensions = jsonToDict(d_param)
+    if dimensions is not None:
+        qbm = getDimentions(dimensions, qbm)
+    else:
+        return "ERROR: -dimensions- invalid json syntax"    
 
     query = qbm.queryIntersectRadius(app.config['LOCATION'], float(lon), float(lat), float(radius))
 
@@ -427,12 +449,8 @@ def discovery_dile_by_radius(lon,lat,radius):
 def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     """Discovery the diles given a bounding box.
 
-    :param: time: time costraits
-    :param: level: level costrains
-    :param: vars: variables contraints
-
     :example: /discovery/dile/by/bbox/-135.0/22.5/-45.0/67.5
-
+    :param: dimensions: json document
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
@@ -446,6 +464,15 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     }
 
     qbm = QueryBuilderMongo()
+
+    d_param = getUrlParam('dimensions')
+
+    if d_param is not None:
+        dimensions = jsonToDict(d_param)
+    if dimensions is not None:
+        qbm = getDimentions(dimensions, qbm)
+    else:
+        return "ERROR: -dimensions- invalid json syntax" 
 
     query = qbm.queryIntersectBbox(app.config['LOCATION'],bb)
 
@@ -462,7 +489,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
 def select_dile_by_uri():
     """Download a dile given a uri.
 
-    :example: /select/dile?uri=s3:///sadiles/results/009fe65264b158898f16e991f28223d2/tmin/0/0/2/0/0
+    :example: /select/dile?uri=http://s3.amazonaws.com/edu-uchicago-rdcep-diles/fd65252e41e3cf0b431a07ad6e2cbe85/sdile_pr_2_1_1/pr/0/2/1/1/dile_0_2_1_1.nc
 
     :returns:  netcdf4 -- the return the dile.
     -------------------------------------------------------------------------------------------
