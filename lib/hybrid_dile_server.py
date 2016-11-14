@@ -348,7 +348,7 @@ def index():
 -------------------------------------------------------------------------------------------
 """
 
-@app.route('/test'):
+@app.route('/test')
 def test():
     qbm = QueryBuilderMongo()
     v_param = request.args.getlist('variable')
