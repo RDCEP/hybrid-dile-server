@@ -271,6 +271,11 @@ def getFeature(feature, qbm):
 
     return qbm
 
+def uvarToList(uvar):
+
+    return literal_eval(uvar)
+
+
 @app.cli.command('initdb')
 def initdb_command():
     """Creates the database tables."""
@@ -334,8 +339,9 @@ def index():
 
 @app.route('/test')
 def test():
-    var = getUrlParam('var')
+    param = getUrlParam('var')
 
+    var = uvarToList(var) 
     print var
     print type(var)
 
