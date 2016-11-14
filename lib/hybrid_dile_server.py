@@ -339,7 +339,7 @@ def test():
     print var
     print type(var)
 
-    return jsonify(struct)
+    return var
 
 
 @app.route('/discovery/dile/by/feature')
