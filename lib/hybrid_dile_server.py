@@ -265,10 +265,17 @@ def getVariables(var,qbm):
 
         queries = [ {"variable": x} for x in var if isinstance(x,basestring) or isinstance(x,unicode)]
         
-        try:
-            qbm.addField(qbm.queryLogical('or',queries))
-        except:
-            raise
+        if len(var) > 1:
+            try:
+                qbm.addField(qbm.queryLogical('or',queries))
+            except:
+                raise
+        else:
+            try:
+                qbm.addField("variable":var[0])
+            except:
+                raise
+
 
     elif isinstance(var,basestring) or isinstance(var,unicode):
 
