@@ -110,13 +110,13 @@ class QueryBuilderMongo(object):
 	def queryLogical(self,operator,vec):
 
 		if operator.lower() in ['and', '&&', '&']:
-			if len(vec) < 2:
+			if len(vec) > 1:
 				query = {"$and":vec}
 			else:
 				raise Exception("Invalid size ( expected at least 2 items got "+str(len(vec))+" )")
 
 		elif operator.lower() in ['or', '||', '|']:
-			if len(vec) < 2:
+			if len(vec) > 1:
 				query = {"$or":vec}
 			else:
 				raise Exception("Invalid size ( expected at least 2 items got "+str(len(vec))+" )")
@@ -128,7 +128,7 @@ class QueryBuilderMongo(object):
 				raise Exception("Invalid size (expected 1 item got "+str(len(vec))+" )")
 
 		elif operator.lower() in ['nor', '!|']:
-			if len(vec) < 2:
+			if len(vec) > 1:
 				query = {"$nor":vec}
 			else:
 				raise Exception("Invalid size ( expected at least 2 items got "+str(len(vec))+" )")
