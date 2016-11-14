@@ -272,7 +272,7 @@ def getVariables(var,qbm):
                 raise
         else:
             try:
-                qbm.addField("variable":var[0])
+                qbm.addField({"variable":var[0]})
             except:
                 raise
 
