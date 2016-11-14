@@ -181,12 +181,16 @@ def getUrlParam(name):
   value=None
   
   try:
-    value=request.args.get(name)
+    value = request.args.get(name)
   except:
-    pass
+    try:
+        value = request.args.getlist(name)
+    except:
+        pass
+  
   if value is None:
     try:
-      value=request.form[name]
+      value = request.form[name]
     except:    
       pass
 
@@ -370,11 +374,16 @@ def test():
 
     var = request.args.getlist('var')
 
+    test = { 'var' : var,
+            'type' : type(var)
+
+    }
+
     #qbm = getVariables(var, qbm)
 
     #return jsonify(qbm.getQuery())
 
-    return jsonify(var)
+    return jsonify(test)
 
 
 @app.route('/discovery/dile/by/feature')
