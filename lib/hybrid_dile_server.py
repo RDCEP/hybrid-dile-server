@@ -271,9 +271,31 @@ def getFeature(feature, qbm):
 
     return qbm
 
-def uvarToList(uvar):
+def uvarToVar(uvar):
 
     return literal_eval(uvar)
+
+def getVariables(var,qbm):
+    
+    if isinstance(var,tuple) or isinstance(var,list):
+        
+        queries = [{"variable": x } for x in var if isinstance(x,basestring)]
+        
+        try:
+            qbm.queryLogical('or',queries)
+        except:
+            raise
+
+    elif isinstance(var,basestring):
+
+        try:
+            qbm.addField({"variable": var})
+        except:
+            raise
+
+    return qbm
+
+
 
 
 @app.cli.command('initdb')
@@ -339,13 +361,16 @@ def index():
 
 @app.route('/test')
 def test():
+    
+    qbm = QueryBuilderMongo()
+
     param = getUrlParam('var')
-
     var = uvarToList(param) 
-    print var
-    print type(var)
 
-    return var
+    qbm = getVariables(var, qbm)
+
+    return jsonify(qbm.getQuery())
+
 
 
 @app.route('/discovery/dile/by/feature')
