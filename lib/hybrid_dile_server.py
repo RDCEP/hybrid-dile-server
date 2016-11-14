@@ -315,8 +315,6 @@ def index():
                     path=re.findall(r'"([^"]*)"', line)[0]
                     if path != '/':
                         action={"method":method,"url":cgi.escape(path),"params":[]}
-            elif line.startswith('"""Note'):
-                add=True
             elif line.startswith('"""') and action is not None:
                 if add is False:
                     add=True
