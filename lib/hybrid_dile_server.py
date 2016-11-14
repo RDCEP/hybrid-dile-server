@@ -376,7 +376,7 @@ def test():
 
     lis = getUrlParam('lis')
 
-    test = {{'var': var, 'type': str(type(var))} {'list': lis, 'type': str(type(lis[0]))}}
+    test = {{'var': var, 'type': str(type(var))},{'list': lis, 'type': str(type(lis[0]))}}
 
     #qbm = getVariables(var, qbm)
 
