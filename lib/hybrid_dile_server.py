@@ -272,7 +272,8 @@ def getFeature(feature, qbm):
     return qbm
 
 def uvarToVar(uvar):
-
+    print uvar
+    print type(uvar)
     return literal_eval(uvar)
 
 def getVariables(var,qbm):
@@ -365,9 +366,6 @@ def test():
     qbm = QueryBuilderMongo()
 
     param = getUrlParam('var')
-
-    print param
-    print type(param)
 
     var = uvarToVar(param) 
 
