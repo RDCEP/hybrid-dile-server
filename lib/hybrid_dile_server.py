@@ -263,7 +263,7 @@ def getVariables(var,qbm):
     
     if isinstance(var,tuple) or isinstance(var,list):
 
-        print "hello!"
+        queries = [ x for x in var if isinstance(x,basestring) or isinstance(x,unicode)]
         
         try:
             qbm.queryLogical('or',queries)
@@ -346,7 +346,7 @@ def index():
 @app.route('/test')
 def test():
     qbm = QueryBuilderMongo()
-    v_param = request.args.getlist('variable')
+    v_param = request.args.getlist('var')
 
     if v_param is not None:
         qbm = getVariables(v_param, qbm)
