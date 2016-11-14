@@ -264,6 +264,8 @@ def getVariables(var,qbm):
     if isinstance(var,tuple) or isinstance(var,list):
 
         queries = [ x for x in var if isinstance(x,basestring) or isinstance(x,unicode)]
+        print "var vector: ", var
+        print "query vector: ", queries
         
         try:
             qbm.queryLogical('or',queries)
@@ -347,6 +349,7 @@ def index():
 def test():
     qbm = QueryBuilderMongo()
     v_param = request.args.getlist('var')
+    print v_param
 
     if v_param is not None:
         qbm = getVariables(v_param, qbm)
