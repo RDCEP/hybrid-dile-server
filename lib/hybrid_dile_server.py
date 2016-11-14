@@ -365,7 +365,7 @@ def test():
     qbm = QueryBuilderMongo()
 
     param = getUrlParam('var')
-    var = uvarToList(param) 
+    var = uvarToVar(param) 
 
     qbm = getVariables(var, qbm)
 
