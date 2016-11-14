@@ -350,16 +350,6 @@ def index():
 -------------------------------------------------------------------------------------------
 """
 
-@app.route('/test')
-def test():
-    qbm = QueryBuilderMongo()
-    v_param = request.args.getlist('var')
-    print v_param
-
-    if v_param is not None:
-        qbm = getVariables(v_param, qbm)
-
-    return jsonify(qbm.getQuery())
 
 
 @app.route('/discovery/dile/by/feature')
@@ -395,7 +385,8 @@ def discovery_dile_by_feature():
             return "ERROR: -dimensions- invalid json syntax"
 
     if v_param is not None:
-        pass
+        qbm = getVariables(v_param, qbm)
+
     qbm.addProjection({"_id": 0, "uri" : 1})
 
     return jsonify(query_diles_db(qbm.getQuery()))
@@ -417,6 +408,7 @@ def discovery_dile_by_position(lon,lat):
     qbm   = QueryBuilderMongo()
 
     d_param = request.args.get('dim')
+    v_param = request.args.getlist('var')
 
     if d_param is not None:
         dimensions = jsonToDict(d_param)
@@ -424,6 +416,9 @@ def discovery_dile_by_position(lon,lat):
         qbm = getDimentions(dimensions, qbm)
     else:
         return "ERROR: -dimensions- invalid json syntax" 
+
+    if v_param is not None:
+        qbm = getVariables(v_param, qbm)
 
     query = qbm.queryIntersectPoint(app.config['LOCATION'], float(lon), float(lat))
 
@@ -449,6 +444,7 @@ def discovery_dile_by_radius(lon,lat,radius):
     qbm = QueryBuilderMongo()
 
     d_param = request.args.get('dim')
+    v_param = request.args.getlist('var')
 
     if d_param is not None:
         dimensions = jsonToDict(d_param)
@@ -488,6 +484,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     qbm = QueryBuilderMongo()
 
     d_param = request.args.get('dim')
+    v_param = request.args.getlist('var')
 
     if d_param is not None:
         dimensions = jsonToDict(d_param)
@@ -495,6 +492,9 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
         qbm = getDimentions(dimensions, qbm)
     else:
         return "ERROR: -dimensions- invalid json syntax" 
+
+    if v_param is not None:
+        qbm = getVariables(v_param, qbm)
 
     query = qbm.queryIntersectBbox(app.config['LOCATION'],bb)
 
