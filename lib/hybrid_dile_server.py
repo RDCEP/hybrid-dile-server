@@ -341,7 +341,7 @@ def index():
 def test():
     param = getUrlParam('var')
 
-    var = uvarToList(var) 
+    var = uvarToList(param) 
     print var
     print type(var)
 
