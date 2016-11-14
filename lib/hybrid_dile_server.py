@@ -368,9 +368,7 @@ def test():
     
     qbm = QueryBuilderMongo()
 
-    param = getUrlParam('var')
-
-    var = jsonToDict(param) 
+    var = request.args.getlist('var')
 
     #qbm = getVariables(var, qbm)
 
