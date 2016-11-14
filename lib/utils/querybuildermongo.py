@@ -113,25 +113,25 @@ class QueryBuilderMongo(object):
 			if len(vec) < 2:
 				query = {"$and":vec}
 			else:
-				raise Exception("Invalid size ( expected at least 2 items got "+len(vec)+" )")
+				raise Exception("Invalid size ( expected at least 2 items got "+str(len(vec))+" )")
 
 		elif operator.lower() in ['or', '||', '|']:
 			if len(vec) < 2:
 				query = {"$or":vec}
 			else:
-				raise Exception("Invalid size ( expected at least 2 items got "+len(vec)+" )")
+				raise Exception("Invalid size ( expected at least 2 items got "+str(len(vec))+" )")
 
 		elif operator.lower() in ['not', '!', '!!']:
 			if len(vec) == 1:
 				query = {"$not":vec}
 			else:
-				raise Exception("Invalid size (expected 1 item got "+len(vec)+" )")
+				raise Exception("Invalid size (expected 1 item got "+str(len(vec))+" )")
 
 		elif operator.lower() in ['nor', '!|']:
 			if len(vec) < 2:
 				query = {"$nor":vec}
 			else:
-				raise Exception("Invalid size ( expected at least 2 items got "+len(vec)+" )")
+				raise Exception("Invalid size ( expected at least 2 items got "+str(len(vec))+" )")
 		else:
 			raise Exception("Invalid Operator")
 
