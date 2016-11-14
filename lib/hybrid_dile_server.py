@@ -267,7 +267,7 @@ def getVariables(var,qbm):
     
     if isinstance(var,tuple) or isinstance(var,list):
         
-        queries = [{"variable": x } for x in var if isinstance(x,basestring)]
+        queries = [{"variable": x } for x in var if isinstance(x,unicode)]
         print queries
         
         try:
