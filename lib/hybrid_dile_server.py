@@ -367,6 +367,7 @@ def test():
     param = getUrlParam('var')
 
     print param
+    print type(param)
 
     var = uvarToVar(param) 
 
