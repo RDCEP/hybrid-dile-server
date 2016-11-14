@@ -376,8 +376,11 @@ def test():
 
     lis = getUrlParam('lis')
 
-    test = {{'var': var, 'type': str(type(var))},{'list': lis, 'type': str(type(lis[0]))}}
+    test = {'var': var,'list': lis}
 
+    print "var type: ",type(var)
+    print "list type: ",type(lis)
+    print "elem type: ",type(lis[0])
     #qbm = getVariables(var, qbm)
 
     #return jsonify(qbm.getQuery())
