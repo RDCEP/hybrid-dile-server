@@ -354,7 +354,7 @@ def test():
     v_param = request.args.getlist('variable')
 
     if v_param is not None:
-        qbm = getVariables(var, qbm)
+        qbm = getVariables(v_param, qbm)
 
     return jsonify(qbm.getQuery())
 
