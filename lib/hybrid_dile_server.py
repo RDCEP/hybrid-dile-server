@@ -176,25 +176,6 @@ def aggregate_result_diles(pipeline):
     return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline))
 
 
-def getUrlParam(name):
-  
-  value=None
-  
-  try:
-    value = request.args.getlist(name)
-    if len(value) == 1:
-        value = request.args.get(name)
-  except:
-    pass
-  
-  if value is None:
-    try:
-      value = request.form[name]
-    except:    
-      pass
-
-  return value
-
 
 def getKeyValue(dictionary,param):
 
@@ -287,18 +268,19 @@ def getVariables(var,qbm):
     if isinstance(var,tuple) or isinstance(var,list):
         
         queries = [{"variable": x } for x in var if isinstance(x,basestring)]
+        print queries
         
         try:
             qbm.queryLogical('or',queries)
         except:
-            raise
+            pass
 
     elif isinstance(var,basestring):
 
         try:
             qbm.addField({"variable": var})
         except:
-            raise
+            pass
 
     return qbm
 
@@ -366,25 +348,15 @@ def index():
 -------------------------------------------------------------------------------------------
 """
 
-@app.route('/test')
+@app.route('/test'):
 def test():
-    
     qbm = QueryBuilderMongo()
+    v_param = request.args.getlist('variable')
 
-    var = getUrlParam('var')
+    if v_param is not None:
+        qbm = getVariables(var, qbm)
 
-    lis = request.args.getlist('lis')
-
-    test = {'var': var,'list': lis}
-
-    print "var type: ",type(var)
-    print "list type: ",type(lis)
-    print "elem type: ",type(lis[0])
-    #qbm = getVariables(var, qbm)
-
-    #return jsonify(qbm.getQuery())
-
-    return jsonify(test)
+    return jsonify(qbm.getQuery())
 
 
 @app.route('/discovery/dile/by/feature')
@@ -393,15 +365,16 @@ def discovery_dile_by_feature():
     """Discovery the diles given a Feature (Point or Polygon)
  
     :param: feature:    json feature  
-    :example: /discovery/dile/by/feature?feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
+    :example: /discovery/dile/by/feat?feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
     :returns:  geojson -- return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
     """
 
     qbm = QueryBuilderMongo()
 
-    f_param = getUrlParam('feature')    
-    d_param = getUrlParam('dimensions')
+    f_param = request.args.get('feat')    
+    d_param = request.args.get('dim')
+    v_param = request.args.getlist('var')
 
     if f_param is not None:
         feature = geojsonToDict(f_param)       
@@ -417,6 +390,8 @@ def discovery_dile_by_feature():
             qbm = getDimentions(dimensions, qbm)
         else:
             return "ERROR: -dimensions- invalid json syntax"
+
+    if v_param is not None:
 
     qbm.addProjection({"_id": 0, "uri" : 1})
 
@@ -438,7 +413,7 @@ def discovery_dile_by_position(lon,lat):
 
     qbm   = QueryBuilderMongo()
 
-    d_param = getUrlParam('dimensions')
+    d_param = request.args.get('dim')
 
     if d_param is not None:
         dimensions = jsonToDict(d_param)
@@ -470,7 +445,7 @@ def discovery_dile_by_radius(lon,lat,radius):
 
     qbm = QueryBuilderMongo()
 
-    d_param = getUrlParam('dimensions')
+    d_param = request.args.get('dim')
 
     if d_param is not None:
         dimensions = jsonToDict(d_param)
@@ -509,7 +484,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
 
     qbm = QueryBuilderMongo()
 
-    d_param = getUrlParam('dimensions')
+    d_param = request.args.get('dim')
 
     if d_param is not None:
         dimensions = jsonToDict(d_param)
