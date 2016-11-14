@@ -374,7 +374,7 @@ def test():
 
     var = getUrlParam('var')
 
-    lis = getUrlParam('lis')
+    lis = request.args.getlist('lis')
 
     test = {'var': var,'list': lis}
 
