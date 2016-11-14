@@ -367,10 +367,11 @@ def test():
     param = getUrlParam('var')
     var = uvarToVar(param) 
 
-    qbm = getVariables(var, qbm)
+    #qbm = getVariables(var, qbm)
 
-    return jsonify(qbm.getQuery())
+    #return jsonify(qbm.getQuery())
 
+    return jsonify(var)
 
 
 @app.route('/discovery/dile/by/feature')
