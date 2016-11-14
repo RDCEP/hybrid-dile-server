@@ -260,10 +260,10 @@ def getFeature(feature, qbm):
 
 def getVariables(var,qbm):
 
-    print type(var)
     
     if isinstance(var,tuple) or isinstance(var,list):
 
+        print "hello!"
         
         try:
             qbm.queryLogical('or',queries)
