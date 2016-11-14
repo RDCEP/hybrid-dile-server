@@ -350,10 +350,6 @@ def index():
 -------------------------------------------------------------------------------------------
 """
 
-"""Note
-
-
-"""
 
 
 @app.route('/discovery/dile/by/feature')
@@ -361,9 +357,9 @@ def discovery_dile_by_feature():
 
     """Discovery the diles given a Feature (Point or Polygon)
  
-    :param:json feature  
-    :example:/discovery/dile/by/feat?feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
-    :returns:geojson -- return a feature collection with the selected diles.
+    :param: feature:    json feature  
+    :example: /discovery/dile/by/feat?feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
+    :returns:  geojson -- return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
     """
 
@@ -402,9 +398,9 @@ def discovery_dile_by_feature():
 def discovery_dile_by_position(lon,lat):
     """Discovery the diles given a lon/lat position.
 
-    :example:/discovery/dile/by/position/-135.0/22.5
-    :param:json document
-    :returns:geojson -- the return a feature collection with the selected diles.
+    :example: /discovery/dile/by/position/-135.0/22.5
+    :param: dimensions: json document
+    :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
     """
@@ -438,9 +434,9 @@ def discovery_dile_by_position(lon,lat):
 def discovery_dile_by_radius(lon,lat,radius):
     """Discovery the diles given a center point by lon/lat and a radius in km.
 
-    :example:/discovery/dile/by/radius/-135.0/22.5/5000.0
+    :example: /discovery/dile/by/radius/-135.0/22.5/5000.0
 
-    :returns:geojson -- the return a feature collection with the selected diles.
+    :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
     """
