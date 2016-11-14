@@ -6,7 +6,8 @@
     :copyright: (c) 2016 by Raffaele Montella & Sergio Apreda.
     :license: Apache 2.0, see LICENSE for more details.
 """
-import  geojson, json, sys, re, urllib, urllib2, socket, json, pydoc, cgi, os, time, inspect
+import  geojson, json, sys, re, urllib, urllib2, socket, unicodedata
+import  pydoc, cgi, os, time, inspect
 
 from hashlib  import md5
 from datetime import datetime
@@ -229,6 +230,7 @@ def jsonToDict(param):
     else:
         return item
 
+
 def geojsonToDict(param):
 
     try:
@@ -368,7 +370,7 @@ def test():
 
     param = getUrlParam('var')
 
-    var = uvarToVar(param) 
+    var = jsonToDict(param) 
 
     #qbm = getVariables(var, qbm)
 
