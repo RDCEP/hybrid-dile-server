@@ -257,18 +257,13 @@ def getFeature(feature, qbm):
 
     return qbm
 
-def uvarToVar(uvar):
-    try:
-        return literal_eval(uvar)
-    except ValueError:
-        return literal_eval(uvar.encode('utf-8'))
 
 def getVariables(var,qbm):
     
     if isinstance(var,tuple) or isinstance(var,list):
         
-        queries = [{"variable": x } for x in var if isinstance(x,unicode)]
-        print queries
+        for item in var:
+            print type(var)
         
         try:
             qbm.queryLogical('or',queries)
