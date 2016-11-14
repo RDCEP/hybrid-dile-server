@@ -336,9 +336,8 @@ def index():
 def test():
     var = getUrlParam('var')
 
-    struct = {  "var": jsonToDict(var),
-                "type": type(var)
-    }
+    print var
+    print type(var)
 
     return jsonify(struct)
 
