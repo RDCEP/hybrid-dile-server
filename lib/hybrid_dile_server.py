@@ -263,9 +263,7 @@ def getVariables(var,qbm):
     
     if isinstance(var,tuple) or isinstance(var,list):
 
-        queries = [ x for x in var if isinstance(x,basestring) or isinstance(x,unicode)]
-        print "var vector: ", var
-        print "query vector: ", queries
+        queries = [ {"variable": x} for x in var if isinstance(x,basestring) or isinstance(x,unicode)]
         
         try:
             qbm.queryLogical('or',queries)
