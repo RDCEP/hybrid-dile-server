@@ -181,12 +181,11 @@ def getUrlParam(name):
   value=None
   
   try:
-    value = request.args.get(name)
+    value = request.args.getlist(name)
+    if len(value) == 1:
+        value = request.args.get(name)
   except:
-    try:
-        value = request.args.getlist(name)
-    except:
-        pass
+    pass
   
   if value is None:
     try:
@@ -374,7 +373,7 @@ def test():
 
     var = getUrlParam('var')
 
-    lis = request.args.getlist('lis')
+    lis = getUrlParam('lis')
 
     test = {'var': var,'list': lis}
 
