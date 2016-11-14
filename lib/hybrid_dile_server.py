@@ -182,6 +182,7 @@ def getUrlParam(name):
   
   try:
     value = request.args.getlist(name)
+    print type(value)," ", len(value)
     if len(value) == 1:
         value = request.args.get(name)
   except:
