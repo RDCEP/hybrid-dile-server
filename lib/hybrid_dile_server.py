@@ -272,9 +272,10 @@ def getFeature(feature, qbm):
     return qbm
 
 def uvarToVar(uvar):
-    print uvar
-    print type(uvar)
-    return literal_eval(uvar)
+    try:
+        return literal_eval(uvar)
+    except ValueError:
+        return literal_eval(uvar.encode('utf-8'))
 
 def getVariables(var,qbm):
     
