@@ -392,7 +392,7 @@ def discovery_dile_by_feature():
             return "ERROR: -dimensions- invalid json syntax"
 
     if v_param is not None:
-
+        pass
     qbm.addProjection({"_id": 0, "uri" : 1})
 
     return jsonify(query_diles_db(qbm.getQuery()))
