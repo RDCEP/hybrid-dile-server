@@ -384,8 +384,7 @@ def discovery_dile_by_feature():
         else:
             return "ERROR: -dimensions- invalid json syntax"
 
-    if v_param is not None:
-        print v_param
+    if v_param:
         qbm = getVariables(v_param, qbm)
 
     qbm.addProjection({"_id": 0, "uri" : 1})
@@ -413,12 +412,12 @@ def discovery_dile_by_position(lon,lat):
 
     if d_param is not None:
         dimensions = jsonToDict(d_param)
-    if dimensions is not None:
-        qbm = getDimentions(dimensions, qbm)
-    else:
-        return "ERROR: -dimensions- invalid json syntax" 
+        if dimensions is not None:
+            qbm = getDimentions(dimensions, qbm)
+        else:
+            return "ERROR: -dimensions- invalid json syntax" 
 
-    if v_param is not None:
+    if v_param:
         qbm = getVariables(v_param, qbm)
 
     query = qbm.queryIntersectPoint(app.config['LOCATION'], float(lon), float(lat))
@@ -455,8 +454,7 @@ def discovery_dile_by_radius(lon,lat,radius):
         else:
             return "ERROR: -dimensions- invalid json syntax"   
 
-    if v_param is not None:
-        print v_param
+    if v_param:
         qbm = getVariables(v_param, qbm)
 
     query = qbm.queryIntersectRadius(app.config['LOCATION'], float(lon), float(lat), float(radius))
