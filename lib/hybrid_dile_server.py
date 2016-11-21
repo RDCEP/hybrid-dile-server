@@ -249,6 +249,7 @@ def getFeature(param, qbm):
     feature = uJsonToDict(param) 
 
     print "trying to get te freaking feature!"
+    print "feature: ",feature
 
     # in this case overalp could happen spatially speaking, but it doesn't matter
     # in mongodb the geointersect handle geojsons as is (supposedly)
