@@ -152,10 +152,14 @@ class QueryBuilderMongo(object):
 
 		return query
 
+# ------------- AGGREGATION (future development) ---------------- #
 
 		def aggregateByField(self,fields):
 
 			pass
+
+# --------------------------------------------------------------- #
+
 
 # -------------- OPERATIONAL ------------- #
 
