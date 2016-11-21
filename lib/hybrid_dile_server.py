@@ -6,8 +6,8 @@
     :copyright: (c) 2016 by Raffaele Montella & Sergio Apreda.
     :license: Apache 2.0, see LICENSE for more details.
 """
-import  geojson, json, sys, re, urllib, urllib2, socket, unicodedata
-import  pydoc, cgi, os, time, inspect
+import  json, sys, re, urllib, urllib2, socket, unicodedata
+import  pydoc, cgi, os, time, inspect, collections
 
 from hashlib  import md5
 from datetime import datetime
@@ -205,55 +205,60 @@ def polyToBB(feature):
 
 
 def jsonToDict(param):
-    
-    try:
-        jstring   = json.loads(json.dumps(param))
-        item      = literal_eval(jstring)
-    except:
-        return None
+
+    # if param isn't None and it's str,unicode type
+    if param is not None and isinstance(param, (basestring)):
+        try:
+            jstring   = json.loads(json.dumps(param))
+            item      = literal_eval(jstring)
+        except:
+            return None
+        else:
+            if item:
+                return item
+            else:
+                return None
     else:
-        return item
+        return None  
+
+def getDimentions(param, qbm):
 
 
-def geojsonToDict(param):
+    dimensions = jsonToDict(param)
 
-    try:
-        jstring   = geojson.loads(geojson.dumps(param))
-        item = literal_eval(jstring)
-    except:
-        return None
-    else:
-        return item  
+    # being a monodimensional interval per variable, a dict doesn't cause
+    # collisions, because any overlap can be resolved by the extention of the domain
+    if dimensions is not None and isinstance(dimensions,dict):
 
-def getDimentions(dimensions, qbm):
+        for item in dimensions:
 
-    if dimensions is not None:
-        
-        for dim in dimensions:            
-            
             d = dimensions[dim]
-            
+
             if dim.lower() == 'time':           
                 qbm.addField(qbm.queryTimeRange(dim.lower(),d[0],d[1]))
             else:
                 qbm.addField(qbm.queryRange(dim.lower(),d[0],d[1]))
-
     return qbm
 
 
-def getFeature(feature, qbm):
+def getFeature(param, qbm):
 
-    if feature['geometry']['type'] == 'Point':
+    feature = jsonToDict(param) 
 
-        c = feature['geometry']['coordinates']
-        qbm.addField(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
-    
-    elif feature['geometry']['type'] == 'Polygon':
-    
-        bb = polyToBB(feature) 
-        qbm.addField(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
-    else:
-        pass
+    # in this case overalp could happen spatially speaking, but it doesn't matter
+    # in mongodb because the geointersect handle geojsons as is (supposedly)
+    if feature is not None and isinstance(feature, dict):
+        if feature['geometry']['type'] == 'Point':
+
+            c = feature['geometry']['coordinates']
+            qbm.addField(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
+        
+        elif feature['geometry']['type'] == 'Polygon':
+        
+            bb = polyToBB(feature) 
+            qbm.addField(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
+        else:
+            pass
 
     return qbm
 
@@ -261,23 +266,25 @@ def getFeature(feature, qbm):
 def getVariables(var,qbm):
 
     
-    if isinstance(var,tuple) or isinstance(var,list):
+    if isinstance(var,(tuple,list)):
 
-        queries = [ {"variable": x} for x in var if isinstance(x,basestring) or isinstance(x,unicode)]
+        queries = [ {"variable": x} for x in var if isinstance(x,basestring)]
         
         if len(var) > 1:
             try:
                 qbm.addField(qbm.queryLogical('or',queries))
             except:
                 raise
-        else:
+        if len(var) == 1:
             try:
                 qbm.addField({"variable":var[0]})
             except:
                 raise
+        else:
+            pass
 
 
-    elif isinstance(var,basestring) or isinstance(var,unicode):
+    elif isinstance(var,basestring):
 
         try:
             qbm.addField({"variable": var})
@@ -363,12 +370,15 @@ def discovery_dile_by_feature():
     -------------------------------------------------------------------------------------------
     """
 
+    # creating the object to build the queries
     qbm = QueryBuilderMongo()
 
+    # request the arguments of the url query
     f_param = request.args.get('feat')    
     d_param = request.args.get('dim')
     v_param = request.args.getlist('var')
 
+    # creating the feature query
     if f_param is not None:
         feature = geojsonToDict(f_param)       
         if feature is not None:
@@ -377,6 +387,7 @@ def discovery_dile_by_feature():
             return "ERROR: -feature- invalid geojson syntax"
 
 
+    # creating the dimension query
     if d_param is not None:
         dimensions = jsonToDict(d_param)
         if dimensions is not None:
@@ -384,9 +395,11 @@ def discovery_dile_by_feature():
         else:
             return "ERROR: -dimensions- invalid json syntax"
 
+    # creating the variables query
     if v_param:
         qbm = getVariables(v_param, qbm)
 
+    # adding the projection
     qbm.addProjection({"_id": 0, "uri" : 1})
 
     return jsonify(query_diles_db(qbm.getQuery()))
