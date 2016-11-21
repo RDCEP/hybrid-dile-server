@@ -339,14 +339,14 @@ def index():
     actions=[]
 
     note1 = {
-                "title" : "Dimensions",
-                "example": "?dim={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}",
+                "title" : "Dimensions (use with any of the above)",
+                "example": host+"/test"+"?dim={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}",
                 "desc": "add in the url query field, can have multipe keys (like time) for multiple dims"
     }
 
     note2 = {
-                "title" : "Variables",
-                "example": "?var=pr&var=tasmax",
+                "title" : "Variables (use with any of the above)",
+                "example": host+"/test"+"?var=pr&var=tasmax",
                 "desc": "add in the url query field, can add multiple variables as for example"
     }
 
@@ -394,10 +394,9 @@ def index():
                     else:
                         pass
 
+     
     actions.append(note1)
     actions.append(note2)
-
-    print actions
 
     return render_template('layout.html',actions=actions)
 
@@ -592,3 +591,8 @@ def select_dile_by_uri():
                 pass
         abort(404)
     abort(400)
+
+
+@app.route("/test")
+def test():
+    return "Hey, that link was a test!"
