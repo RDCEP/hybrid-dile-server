@@ -394,14 +394,14 @@ def discovery_dile_by_feature():
 
     # creating the feature query
     if f_param is not None:
-        qbm = getFeature(feature, qbm)
+        qbm = getFeature(f_param, qbm)
     else:
         return "ERROR: -feature- invalid geojson syntax"
 
 
     # creating the dimension query
     if d_param is not None:
-        qbm = getDimentions(dimensions, qbm)
+        qbm = getDimentions(d_param, qbm)
     else:
         return "ERROR: -dimensions- invalid json syntax"
 
@@ -435,15 +435,17 @@ def discovery_dile_by_position(lon,lat):
     d_param = request.args.get('dim')
     v_param = request.args.getlist('var')
 
+    # creating the dimension query
     if d_param is not None:
-        dimensions = uJsonToDict(d_param)
-        if dimensions is not None:
-            qbm = getDimentions(dimensions, qbm)
-        else:
-            return "ERROR: -dimensions- invalid json syntax" 
+        qbm = getDimentions(d_param, qbm)
+    else:
+        return "ERROR: -dimensions- invalid json syntax"
 
+    # creating the variables query
     if v_param:
         qbm = getVariables(v_param, qbm)
+    else:
+        return "ERROR: -variables- invalid json syntax"
 
     query = qbm.queryIntersectPoint(app.config['LOCATION'], float(lon), float(lat))
 
@@ -471,16 +473,17 @@ def discovery_dile_by_radius(lon,lat,radius):
     d_param = request.args.get('dim')
     v_param = request.args.getlist('var')
 
-
+    # creating the dimension query
     if d_param is not None:
-        dimensions = uJsonToDict(d_param)
-        if dimensions is not None:
-            qbm = getDimentions(dimensions, qbm)
-        else:
-            return "ERROR: -dimensions- invalid json syntax"   
+        qbm = getDimentions(d_param, qbm)
+    else:
+        return "ERROR: -dimensions- invalid json syntax"
 
+    # creating the variables query
     if v_param:
         qbm = getVariables(v_param, qbm)
+    else:
+        return "ERROR: -variables- invalid json syntax"
 
     query = qbm.queryIntersectRadius(app.config['LOCATION'], float(lon), float(lat), float(radius))
 
@@ -515,16 +518,17 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     d_param = request.args.get('dim')
     v_param = request.args.getlist('var')
 
-
+    # creating the dimension query
     if d_param is not None:
-        dimensions = uJsonToDict(d_param)
-        if dimensions is not None:
-            qbm = getDimentions(dimensions, qbm)
-        else:
-            return "ERROR: -dimensions- invalid json syntax"
-    
-    if v_param is not None:
+        qbm = getDimentions(d_param, qbm)
+    else:
+        return "ERROR: -dimensions- invalid json syntax"
+
+    # creating the variables query
+    if v_param:
         qbm = getVariables(v_param, qbm)
+    else:
+        return "ERROR: -variables- invalid json syntax"
 
     query = qbm.queryIntersectBbox(app.config['LOCATION'],bb)
 
