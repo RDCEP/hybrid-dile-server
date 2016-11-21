@@ -204,7 +204,7 @@ def polyToBB(feature):
     return bb
 
 
-def jsonToDict(param):
+def uuJsonToDict(param):
 
     # if param isn't None and it's str,unicode type
     if param is not None and isinstance(param, (basestring)):
@@ -224,7 +224,7 @@ def jsonToDict(param):
 def getDimentions(param, qbm):
 
 
-    dimensions = jsonToDict(param)
+    dimensions = uJsonToDict(param)
 
     # being a monodimensional interval per variable, a dict doesn't cause
     # collisions, because any overlap can be resolved by the extention of the domain
@@ -243,7 +243,7 @@ def getDimentions(param, qbm):
 
 def getFeature(param, qbm):
 
-    feature = jsonToDict(param) 
+    feature = uJsonToDict(param) 
 
     # in this case overalp could happen spatially speaking, but it doesn't matter
     # in mongodb because the geointersect handle geojsons as is (supposedly)
@@ -365,7 +365,7 @@ def discovery_dile_by_feature():
     """Discovery the diles given a Feature (Point or Polygon)
  
     :param: feature:    json feature  
-    :example: /discovery/dile/by/feat?feature={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
+    :example: /discovery/dile/by/feature?feat={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
     :returns:  geojson -- return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
     """
@@ -380,7 +380,7 @@ def discovery_dile_by_feature():
 
     # creating the feature query
     if f_param is not None:
-        feature = geojsonToDict(f_param)       
+        feature = geouJsonToDict(f_param)       
         if feature is not None:
             qbm = getFeature(feature, qbm)
         else:
@@ -389,7 +389,7 @@ def discovery_dile_by_feature():
 
     # creating the dimension query
     if d_param is not None:
-        dimensions = jsonToDict(d_param)
+        dimensions = uJsonToDict(d_param)
         if dimensions is not None:
             qbm = getDimentions(dimensions, qbm)
         else:
@@ -424,7 +424,7 @@ def discovery_dile_by_position(lon,lat):
     v_param = request.args.getlist('var')
 
     if d_param is not None:
-        dimensions = jsonToDict(d_param)
+        dimensions = uJsonToDict(d_param)
         if dimensions is not None:
             qbm = getDimentions(dimensions, qbm)
         else:
@@ -461,7 +461,7 @@ def discovery_dile_by_radius(lon,lat,radius):
 
 
     if d_param is not None:
-        dimensions = jsonToDict(d_param)
+        dimensions = uJsonToDict(d_param)
         if dimensions is not None:
             qbm = getDimentions(dimensions, qbm)
         else:
@@ -505,7 +505,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
 
 
     if d_param is not None:
-        dimensions = jsonToDict(d_param)
+        dimensions = uJsonToDict(d_param)
         if dimensions is not None:
             qbm = getDimentions(dimensions, qbm)
         else:
