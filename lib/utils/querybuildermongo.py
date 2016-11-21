@@ -80,15 +80,18 @@ class QueryBuilderMongo(object):
 
 	def intersectFeature(self,field,feature):
 
-		query = {
-					field: {
-							"$geoIntersects": {
-								"geometry": feature["geometry"]			
-							}
-					}
-		}
-
-		return query
+		try:
+			query = {
+						field: {
+								"$geoIntersects": {
+									"geometry": feature["geometry"]			
+								}
+						}
+			}
+		except:
+			return None
+		else:
+			return query
 	
 	def queryIntersectBbox(self, field, bb):
 
