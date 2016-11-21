@@ -258,20 +258,20 @@ def getFeature(param, qbm):
     # in mongodb the geointersect handle geojsons as is (supposedly)
     if feature is not None and isinstance(feature, dict):
 
-        print "feature exist and is a dict"
+        try:
+            if feature['geometry']['type'] == 'Point':
 
-        if feature['geometry']['type'] == 'Point':
 
-            print "it's a point!"
-
-            c = feature['geometry']['coordinates']
-            qbm.addField(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
+                c = feature['geometry']['coordinates']
+                qbm.addField(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
         
-        elif feature['geometry']['type'] == 'Polygon':
-        
-            bb = polyToBB(feature) 
-            qbm.addField(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
-        else:
+            elif feature['geometry']['type'] == 'Polygon':
+            
+                bb = polyToBB(feature) 
+                qbm.addField(qbm.queryIntersectBbox(app.config['LOCATION'], bb))
+            else:
+                pass
+        except:
             pass
 
     return qbm
@@ -284,19 +284,21 @@ def getVariables(var,qbm):
 
         queries = [ {"variable": x} for x in var if isinstance(x,basestring)]
         
-        if len(var) > 1:
+        if len(queries) > 1:
+            
             try:
                 qbm.addField(qbm.queryLogical('or',queries))
             except:
-                raise
-        if len(var) == 1:
+                pass
+
+        elif len(queries) == 1:
+            
             try:
                 qbm.addField({"variable":var[0]})
             except:
-                raise
+                pass
         else:
             pass
-
 
     elif isinstance(var,basestring):
 
