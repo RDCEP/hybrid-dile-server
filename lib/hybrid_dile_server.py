@@ -115,15 +115,16 @@ app = Flask(__name__)
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
-    DATABASE         ='test',
-    COLLECTION_DILES ='diles',
-    COLLECTION_FILES ='files',
-    DEBUG            =True,
-    SECRET_KEY       ='development key',
-    USERNAME         ='admin',
-    PASSWORD         ='default',
+    DATABASE         = 'test',
+    COLLECTION_DILES = 'diles',
+    COLLECTION_FILES = 'files',
+    DEBUG            = True,
+    SECRET_KEY       = 'development key',
+    USERNAME         = 'admin',
+    PASSWORD         = 'default',
     LOCATION         = 'loc.geometry',
-    TIME             = 'time' 
+    TIME             = 'time',
+    LIMIT            = 100 
 ))
 app.config.from_envvar('HYBRID_DILE_SERVER_SETTINGS', silent=True)
 
@@ -154,6 +155,24 @@ def init_db():
     db = get_db()
 
 
+def uJsonToDict(param):
+
+    # if param isn't None and it's str,unicode type
+    if param is not None and isinstance(param, (basestring)):
+        try:
+            jstring   = json.loads(json.dumps(param))
+            item      = literal_eval(jstring)
+            print item
+        except:
+            return None
+        else:
+            if item:
+                return item
+            else:
+                return None
+    else:
+        return None  
+
 """ --------------------- DB QUERY FUNCTIONS --------------------- """
 
 def query_diles_db(query):
@@ -162,7 +181,11 @@ def query_diles_db(query):
 
     # convention: query[size:2] -- query[0]: query document, query[1]: projection 
     if query[0]:
-        return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]))
+        # returns the result set with a limit of 100 entities
+        # Note: could be interesting to use the sort function on an automatically
+        #       generated counter field that measures the times the a document was matched
+        #       question: is a document considered matching if outside of the result limit ? (prb not)
+        return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1])).limit(app.config['LIMIT'])
     else:
         return "ERROR: malformed query"
 
@@ -172,23 +195,25 @@ def query_files_db(query):
 
     # convention: query[size:2] -- query[0]: query document, query[1]: projection
     if query[0]:
-        return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1]))
+        return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1])).limit(app.config['LIMIT'])
     else:
         return "ERROR: malformed query"
 
 def aggregate_result_diles(pipeline):
 
     db = get_db()
-    return list(db[app.config['COLLECTION_DILES']].aggregate(pipeline))
+    return list(db[app.config['COLLECTION_DILES']].aggregate(pipeline)).limit(app.config['LIMIT'])
 
 
 def aggregate_result_diles(pipeline):
 
     db = get_db()
-    return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline))
+    return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline)).limit(app.config['LIMIT'])
 
 """ ---------------------------------------------------------------- """
 
+
+""" ------------- DICT OPERATIONS (FOR DOC BASED DB) --------------- """ 
 
 def getKeyValue(dictionary,param):
 
@@ -217,26 +242,6 @@ def polyToBB(feature):
     return bb
 
 
-def uJsonToDict(param):
-
-    # if param isn't None and it's str,unicode type
-    if param is not None and isinstance(param, (basestring)):
-        try:
-            jstring   = json.loads(json.dumps(param))
-            item      = literal_eval(jstring)
-            print item
-        except:
-            raise
-            return None
-        else:
-            if item:
-                return item
-            else:
-                return None
-    else:
-
-        return None  
-
 def getDimentions(param, qbm):
 
 
@@ -251,7 +256,7 @@ def getDimentions(param, qbm):
             d = dimensions[key]
 
             # convention: d[size:2] -- d[0]: offset start, d[1]: offset end
-            if key.lower() == 'time':           
+            if key.lower() == app.config['TIME']:           
                 qbm.addField(qbm.queryTimeRange(key,d[0],d[1]))
             else:
                 qbm.addField(qbm.queryRange(key,d[0],d[1]))
@@ -318,7 +323,7 @@ def getVariables(var,qbm):
 
     return qbm
 
-
+""" ---------------------------------------------------------------- """
 
 
 @app.cli.command('initdb')
@@ -389,7 +394,9 @@ def discovery_dile_by_feature():
 
     """Discovery the diles given a Feature (Point or Polygon)
  
-    :param:   feat -- json feature  
+    :param: feat -- json feature
+    :param: dim -- json document
+    :param: var -- single or multiple string variables' names  
     :example: /discovery/dile/by/feature?feat={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
     :returns:  geojson -- return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
@@ -403,7 +410,6 @@ def discovery_dile_by_feature():
     d_param = request.args.get('dim')
     v_param = request.args.getlist('var')
 
-    print f_param
 
     # creating the feature query
     if f_param is not None:
@@ -424,7 +430,7 @@ def discovery_dile_by_feature():
     # adding the projection
     qbm.addProjection({"_id": 0, "uri" : 1})
 
-    return jsonify(qbm.getQuery())
+    return jsonify(query_diles_db(qbm.getQuery()))
 
 
 
@@ -434,7 +440,8 @@ def discovery_dile_by_position(lon,lat):
     """Discovery the diles given a lon/lat position.
 
     :example: /discovery/dile/by/position/-135.0/22.5
-    :param: dimensions: json document
+    :param: dim -- json document
+    :param: var -- single or multiple string variables' names 
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
@@ -458,7 +465,7 @@ def discovery_dile_by_position(lon,lat):
     qbm.addField(query)
     qbm.addProjection({"_id": 0, "uri" : 1})
 
-    return jsonify(qbm.getQuery())
+    return jsonify(query_diles_db(qbm.getQuery()))
 
     
 
@@ -468,7 +475,8 @@ def discovery_dile_by_radius(lon,lat,radius):
     """Discovery the diles given a center point by lon/lat and a radius in km.
 
     :example: /discovery/dile/by/radius/-135.0/22.5/5000.0
-
+    :param: dim -- json document
+    :param: var -- single or multiple string variables' names 
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
@@ -492,8 +500,7 @@ def discovery_dile_by_radius(lon,lat,radius):
     qbm.addField(query)
     qbm.addProjection({"_id": 0, "uri" : 1})
 
-    return jsonify(qbm.getQuery())
-
+    return jsonify(query_diles_db(qbm.getQuery()))
 
 
 @app.route('/discovery/dile/by/bbox/<minLon>/<minLat>/<maxLon>/<maxLat>')
@@ -502,7 +509,8 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     """Discovery the diles given a bounding box.
 
     :example: /discovery/dile/by/bbox/-135.0/22.5/-45.0/67.5
-    :param: dimensions: json document
+    :param: dim -- json document
+    :param: var -- single or multiple string variables' names 
     :returns:  geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
@@ -534,7 +542,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     qbm.addProjection({"_id": 0, "uri" : 1})
 
 
-    return jsonify(qbm.getQuery())
+    return jsonify(query_diles_db(qbm.getQuery()))
 
 
 
