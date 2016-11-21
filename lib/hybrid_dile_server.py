@@ -337,6 +337,19 @@ def index():
     """Shows the home page
     """
     actions=[]
+
+    note1 = {
+                "title" : "Dimensions",
+                "example": "?dim={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}",
+                "desc": "add in the url query field, can have multipe keys (like time) for multiple dims"
+    }
+
+    note2 = {
+                "title" : "Variables",
+                "example": "?var=pr&var=tasmax",
+                "desc": "add in the url query field, can add multiple variables as for example"
+    }
+
     my_path=os.path.abspath(inspect.getfile(inspect.currentframe()))
     print "my_path:"+my_path
     with open(my_path) as f:
@@ -380,6 +393,12 @@ def index():
                         action['returns']=line
                     else:
                         pass
+
+    actions.append(note1)
+    actions.append(note2)
+
+    print actions
+
     return render_template('layout.html',actions=actions)
 
 
