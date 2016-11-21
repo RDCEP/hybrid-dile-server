@@ -169,7 +169,7 @@ def query_diles_db(query):
 def query_files_db(query):
 
     db = get_db()
-    
+
     # convention: query[size:2] -- query[0]: query document, query[1]: projection
     if query[0]:
         return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1]))
@@ -248,8 +248,9 @@ def getDimentions(param, qbm):
 
         for item in dimensions:
 
-            d = dimensions[dim]
+            d = dimensions[item]
 
+            # convention: d[size:2] -- d[0]: offset start, d[1]: offset end
             if dim.lower() == 'time':           
                 qbm.addField(qbm.queryTimeRange(dim.lower(),d[0],d[1]))
             else:
