@@ -367,16 +367,16 @@ def index():
             else:
                 if add is True:
                     if ":example:" in line:
-                        line=line.replace(":example:","").strip()
+                        line=line.replace(":example: ","").strip()
                         action['example']=request.host+line
-                    elif line.startswith(":param"):
+                    elif line.startswith(":param: "):
                         print line
-                        line=line.replace(":param:","").strip()
-                        name=line.split(":")[0]
-                        desc=line.split(":")[1]
+                        line=line.replace(":param: ","").strip()
+                        name=line.split(" -- ")[0]
+                        desc=line.split(" -- ")[1]
                         action['params'].append({"name":name,"desc":desc})
-                    elif line.startswith(":returns:"):
-                        line=line.replace(":returns:","").strip()
+                    elif line.startswith(":returns: "):
+                        line=line.replace(":returns: ","").strip()
                         action['returns']=line
                     else:
                         pass
@@ -440,10 +440,10 @@ def discovery_dile_by_feature():
 def discovery_dile_by_position(lon,lat):
     """Discovery the diles given a lon/lat position.
 
-    :example:/discovery/dile/by/position/-135.0/22.5
-    :param:dim -- json document
-    :param:var -- single or multiple string variables' names 
-    :returns:geojson -- the return a feature collection with the selected diles.
+    :example: /discovery/dile/by/position/-135.0/22.5
+    :param: dim -- json document
+    :param: var -- single or multiple string variables' names 
+    :returns: geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
     """
@@ -475,10 +475,10 @@ def discovery_dile_by_position(lon,lat):
 def discovery_dile_by_radius(lon,lat,radius):
     """Discovery the diles given a center point by lon/lat and a radius in km.
 
-    :example:/discovery/dile/by/radius/-135.0/22.5/5000.0
-    :param:dim -- json document
-    :param:var -- single or multiple string variables' names 
-    :returns:geojson -- the return a feature collection with the selected diles.
+    :example: /discovery/dile/by/radius/-135.0/22.5/5000.0
+    :param: dim -- json document
+    :param: var -- single or multiple string variables' names 
+    :returns: geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
     """
@@ -509,10 +509,10 @@ def discovery_dile_by_radius(lon,lat,radius):
 def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     """Discovery the diles given a bounding box.
 
-    :example:/discovery/dile/by/bbox/-135.0/22.5/-45.0/67.5
-    :param:dim -- json document
-    :param:var -- single or multiple string variables' names 
-    :returns:geojson -- the return a feature collection with the selected diles.
+    :example: /discovery/dile/by/bbox/-135.0/22.5/-45.0/67.5
+    :param: dim -- json document
+    :param: var -- single or multiple string variables' names 
+    :returns: geojson -- the return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
 
     """
@@ -552,9 +552,9 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
 def select_dile_by_uri():
     """Download a dile given a uri.
 
-    :example:/select/dile?uri=http://s3.amazonaws.com/edu-uchicago-rdcep-diles/fd65252e41e3cf0b431a07ad6e2cbe85/sdile_pr_2_1_1/pr/0/2/1/1/dile_0_2_1_1.nc
-    :param:uri -- a valid uri to access the dile
-    :returns:netcdf4 -- the return of the dile.
+    :example: /select/dile?uri=http://s3.amazonaws.com/edu-uchicago-rdcep-diles/fd65252e41e3cf0b431a07ad6e2cbe85/sdile_pr_2_1_1/pr/0/2/1/1/dile_0_2_1_1.nc
+    :param: uri -- a valid uri to access the dile
+    :returns: netcdf4 -- the return of the dile.
     -------------------------------------------------------------------------------------------
 
     """
