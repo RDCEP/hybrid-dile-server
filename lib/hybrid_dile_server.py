@@ -339,15 +339,15 @@ def index():
     actions=[]
 
     note1 = {
-                "title" : "Dimensions (use with any of the above)",
-                "example": host+"/test"+"?dim={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}",
-                "desc": "add in the url query field, can have multipe keys (like time) for multiple dims"
+                "title" :   "Dimensions (use with any of the above)",
+                "example":  "?dim={'time'%3A+['1980-01-01-00%3A00%3A00'%2C+'1980-01-02-00%3A00%3A00']}",
+                "desc":     "add in the url query field, can have multipe keys (like time) for multiple dims"
     }
 
     note2 = {
-                "title" : "Variables (use with any of the above)",
-                "example": host+"/test"+"?var=pr&var=tasmax",
-                "desc": "add in the url query field, can add multiple variables as for example"
+                "title" :   "Variables (use with any of the above)",
+                "example":  "?var=pr&var=tasmax",
+                "desc":     "add in the url query field, can add multiple variables as for example"
     }
 
     my_path=os.path.abspath(inspect.getfile(inspect.currentframe()))
