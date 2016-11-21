@@ -222,6 +222,8 @@ def uJsonToDict(param):
             else:
                 return None
     else:
+        print "param: ",param
+        print "type: ", type(param)
         return None  
 
 def getDimentions(param, qbm):
@@ -245,6 +247,7 @@ def getDimentions(param, qbm):
 
 
 def getFeature(param, qbm):
+
 
     feature = uJsonToDict(param) 
 
