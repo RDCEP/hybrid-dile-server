@@ -153,10 +153,15 @@ def init_db():
     """Initializes the database."""
     db = get_db()
 
+
+""" --------------------- DB QUERY FUNCTIONS --------------------- """
+
 def query_diles_db(query):
 
     db = get_db()
-    if query:
+
+    # convention: query[size:2] -- query[0]: query document, query[1]: projection 
+    if query[0]:
         return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]))
     else:
         return "ERROR: malformed query"
@@ -164,10 +169,12 @@ def query_diles_db(query):
 def query_files_db(query):
 
     db = get_db()
-    if query:
+    
+    # convention: query[size:2] -- query[0]: query document, query[1]: projection
+    if query[0]:
         return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1]))
     else:
-        return 
+        return "ERROR: malformed query"
 
 def aggregate_result_diles(pipeline):
 
@@ -180,6 +187,7 @@ def aggregate_result_diles(pipeline):
     db = get_db()
     return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline))
 
+""" ---------------------------------------------------------------- """
 
 
 def getKeyValue(dictionary,param):
