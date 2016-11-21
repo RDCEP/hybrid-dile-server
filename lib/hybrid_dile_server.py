@@ -204,7 +204,7 @@ def polyToBB(feature):
     return bb
 
 
-def uuJsonToDict(param):
+def uJsonToDict(param):
 
     # if param isn't None and it's str,unicode type
     if param is not None and isinstance(param, (basestring)):
@@ -380,7 +380,7 @@ def discovery_dile_by_feature():
 
     # creating the feature query
     if f_param is not None:
-        feature = geouJsonToDict(f_param)       
+        feature = uJsonToDict(f_param)       
         if feature is not None:
             qbm = getFeature(feature, qbm)
         else:
