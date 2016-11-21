@@ -156,14 +156,18 @@ def init_db():
 def query_diles_db(query):
 
     db = get_db()
-    return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]))
-
+    if query:
+        return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]))
+    else:
+        return "ERROR: malformed query"
 
 def query_files_db(query):
 
     db = get_db()
-    return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1]))
-
+    if query:
+        return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1]))
+    else:
+        return 
 
 def aggregate_result_diles(pipeline):
 
@@ -222,8 +226,7 @@ def uJsonToDict(param):
             else:
                 return None
     else:
-        print "param: ",param
-        print "type: ", type(param)
+
         return None  
 
 def getDimentions(param, qbm):
@@ -250,9 +253,6 @@ def getFeature(param, qbm):
 
 
     feature = uJsonToDict(param) 
-
-    print "trying to get te freaking feature!"
-    print "feature: ",feature
 
     # in this case overalp could happen spatially speaking, but it doesn't matter
     # in mongodb the geointersect handle geojsons as is (supposedly)
@@ -402,14 +402,11 @@ def discovery_dile_by_feature():
     # creating the dimension query
     if d_param is not None:
         qbm = getDimentions(d_param, qbm)
-    else:
-        return "ERROR: -dimensions- invalid json syntax"
 
     # creating the variables query
     if v_param:
         qbm = getVariables(v_param, qbm)
-    else:
-        return "ERROR: -variables- invalid json syntax"
+
 
     # adding the projection
     qbm.addProjection({"_id": 0, "uri" : 1})
@@ -438,14 +435,10 @@ def discovery_dile_by_position(lon,lat):
     # creating the dimension query
     if d_param is not None:
         qbm = getDimentions(d_param, qbm)
-    else:
-        return "ERROR: -dimensions- invalid json syntax"
 
     # creating the variables query
     if v_param:
         qbm = getVariables(v_param, qbm)
-    else:
-        return "ERROR: -variables- invalid json syntax"
 
     query = qbm.queryIntersectPoint(app.config['LOCATION'], float(lon), float(lat))
 
@@ -476,14 +469,10 @@ def discovery_dile_by_radius(lon,lat,radius):
     # creating the dimension query
     if d_param is not None:
         qbm = getDimentions(d_param, qbm)
-    else:
-        return "ERROR: -dimensions- invalid json syntax"
 
     # creating the variables query
     if v_param:
         qbm = getVariables(v_param, qbm)
-    else:
-        return "ERROR: -variables- invalid json syntax"
 
     query = qbm.queryIntersectRadius(app.config['LOCATION'], float(lon), float(lat), float(radius))
 
@@ -521,14 +510,10 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     # creating the dimension query
     if d_param is not None:
         qbm = getDimentions(d_param, qbm)
-    else:
-        return "ERROR: -dimensions- invalid json syntax"
 
     # creating the variables query
     if v_param:
         qbm = getVariables(v_param, qbm)
-    else:
-        return "ERROR: -variables- invalid json syntax"
 
     query = qbm.queryIntersectBbox(app.config['LOCATION'],bb)
 
@@ -554,7 +539,7 @@ def select_dile_by_uri():
     uri=request.args.get('uri')
     if uri is not None:
         if uri.startswith("s3://"):
-            uri=uri.replace("s3://","")
+            uri  = uri.replace("s3://","")
             conn = S3Connection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
             try:
                 mybucket = conn.get_bucket(uri)
