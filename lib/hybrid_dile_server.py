@@ -48,7 +48,7 @@ with open('/home/ubuntu/.s3/AWS_ACCESS_KEY_ID', 'r') as myfile:
 with open('/home/ubuntu/.s3/AWS_SECRET_ACCESS_KEY', 'r') as myfile:
   AWS_SECRET_ACCESS_KEY=myfile.read().replace('\n', '')
 
-print "...starting..."
+
 
 #### CROSSDOMAIN DECORATOR ####
 
@@ -185,7 +185,7 @@ def query_diles_db(query):
         # Note: could be interesting to use the sort function on an automatically
         #       generated counter field that measures the times the a document was matched
         #       question: is a document considered matching if outside of the result limit ? (prb not)
-        return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1])).limit(app.config['LIMIT'])
+        return list(db[app.config['COLLECTION_DILES']].find(query[0],query[1]).limit(app.config['LIMIT']))
     else:
         return "ERROR: malformed query"
 
@@ -195,20 +195,20 @@ def query_files_db(query):
 
     # convention: query[size:2] -- query[0]: query document, query[1]: projection
     if query[0]:
-        return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1])).limit(app.config['LIMIT'])
+        return list(db[app.config['COLLECTION_FILES']].find(query[0],query[1]).limit(app.config['LIMIT']))
     else:
         return "ERROR: malformed query"
 
 def aggregate_result_diles(pipeline):
 
     db = get_db()
-    return list(db[app.config['COLLECTION_DILES']].aggregate(pipeline)).limit(app.config['LIMIT'])
+    return list(db[app.config['COLLECTION_DILES']].aggregate(pipeline).limit(app.config['LIMIT']))
 
 
 def aggregate_result_diles(pipeline):
 
     db = get_db()
-    return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline)).limit(app.config['LIMIT'])
+    return list(db[app.config['COLLECTION_FILES']].aggregate(pipeline).limit(app.config['LIMIT']))
 
 """ ---------------------------------------------------------------- """
 
