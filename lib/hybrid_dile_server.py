@@ -370,6 +370,7 @@ def index():
                         line=line.replace(":example:","").strip()
                         action['example']=request.host+line
                     elif line.startswith(":param"):
+                        print line
                         line=line.replace(":param:","").strip()
                         name=line.split(":")[0]
                         desc=line.split(":")[1]
