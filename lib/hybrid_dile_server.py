@@ -212,6 +212,7 @@ def uJsonToDict(param):
         try:
             jstring   = json.loads(json.dumps(param))
             item      = literal_eval(jstring)
+            print item
         except:
             raise
             return None
@@ -219,6 +220,7 @@ def uJsonToDict(param):
             if item:
                 return item
             else:
+                print "nothing else matters!"
                 return None
     else:
         return None  
