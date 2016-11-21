@@ -392,6 +392,8 @@ def discovery_dile_by_feature():
     d_param = request.args.get('dim')
     v_param = request.args.getlist('var')
 
+    print f_param
+
     # creating the feature query
     if f_param is not None:
         qbm = getFeature(f_param, qbm)
