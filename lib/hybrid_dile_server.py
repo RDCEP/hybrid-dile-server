@@ -48,6 +48,7 @@ with open('/home/ubuntu/.s3/AWS_ACCESS_KEY_ID', 'r') as myfile:
 with open('/home/ubuntu/.s3/AWS_SECRET_ACCESS_KEY', 'r') as myfile:
   AWS_SECRET_ACCESS_KEY=myfile.read().replace('\n', '')
 
+print "...starting..."
 
 #### CROSSDOMAIN DECORATOR ####
 
@@ -404,8 +405,8 @@ def discovery_dile_by_feature():
     # adding the projection
     qbm.addProjection({"_id": 0, "uri" : 1})
 
-    return jsonify(query_diles_db(qbm.getQuery()))
-    
+    return jsonify(qbm.getQuery())
+
 
 
 @app.route('/discovery/dile/by/position/<lon>/<lat>')
@@ -440,7 +441,7 @@ def discovery_dile_by_position(lon,lat):
     qbm.addField(query)
     qbm.addProjection({"_id": 0, "uri" : 1})
 
-    return jsonify(query_diles_db(qbm.getQuery()))
+    return jsonify(qbm.getQuery())
 
     
 
@@ -477,7 +478,7 @@ def discovery_dile_by_radius(lon,lat,radius):
     qbm.addField(query)
     qbm.addProjection({"_id": 0, "uri" : 1})
 
-    return jsonify(query_diles_db(qbm.getQuery()))
+    return jsonify(qbm.getQuery())
 
 
 
@@ -522,7 +523,7 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
     qbm.addProjection({"_id": 0, "uri" : 1})
 
 
-    return jsonify(query_diles_db(qbm.getQuery()))
+    return jsonify(qbm.getQuery())
 
 
 
