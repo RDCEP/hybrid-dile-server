@@ -394,24 +394,22 @@ def discovery_dile_by_feature():
 
     # creating the feature query
     if f_param is not None:
-        feature = uJsonToDict(f_param)       
-        if feature is not None:
-            qbm = getFeature(feature, qbm)
-        else:
-            return "ERROR: -feature- invalid geojson syntax"
+        qbm = getFeature(feature, qbm)
+    else:
+        return "ERROR: -feature- invalid geojson syntax"
 
 
     # creating the dimension query
     if d_param is not None:
-        dimensions = uJsonToDict(d_param)
-        if dimensions is not None:
-            qbm = getDimentions(dimensions, qbm)
-        else:
-            return "ERROR: -dimensions- invalid json syntax"
+        qbm = getDimentions(dimensions, qbm)
+    else:
+        return "ERROR: -dimensions- invalid json syntax"
 
     # creating the variables query
     if v_param:
         qbm = getVariables(v_param, qbm)
+    else:
+        return "ERROR: -variables- invalid json syntax"
 
     # adding the projection
     qbm.addProjection({"_id": 0, "uri" : 1})
