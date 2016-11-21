@@ -246,15 +246,15 @@ def getDimentions(param, qbm):
     # collisions, because any overlap can be resolved by the extention of the domain
     if dimensions is not None and isinstance(dimensions,dict):
 
-        for item in dimensions:
+        for key in dimensions:
 
-            d = dimensions[item]
+            d = dimensions[key]
 
             # convention: d[size:2] -- d[0]: offset start, d[1]: offset end
-            if dim.lower() == 'time':           
-                qbm.addField(qbm.queryTimeRange(dim.lower(),d[0],d[1]))
+            if key.lower() == 'time':           
+                qbm.addField(qbm.queryTimeRange(key,d[0],d[1]))
             else:
-                qbm.addField(qbm.queryRange(dim.lower(),d[0],d[1]))
+                qbm.addField(qbm.queryRange(key,d[0],d[1]))
     return qbm
 
 
