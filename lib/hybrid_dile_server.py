@@ -207,14 +207,13 @@ def polyToBB(feature):
 
 def uJsonToDict(param):
 
-    print "this is working ?"
-
     # if param isn't None and it's str,unicode type
     if param is not None and isinstance(param, (basestring)):
         try:
             jstring   = json.loads(json.dumps(param))
             item      = literal_eval(jstring)
         except:
+            raise
             return None
         else:
             if item:
