@@ -220,7 +220,6 @@ def uJsonToDict(param):
             if item:
                 return item
             else:
-                print "nothing else matters!"
                 return None
     else:
         return None  
@@ -250,9 +249,14 @@ def getFeature(param, qbm):
     feature = uJsonToDict(param) 
 
     # in this case overalp could happen spatially speaking, but it doesn't matter
-    # in mongodb because the geointersect handle geojsons as is (supposedly)
+    # in mongodb the geointersect handle geojsons as is (supposedly)
     if feature is not None and isinstance(feature, dict):
+
+        print "feature exist and is a dict"
+
         if feature['geometry']['type'] == 'Point':
+
+            print "it's a point!"
 
             c = feature['geometry']['coordinates']
             qbm.addField(qbm.queryIntersectPoint(app.config['LOCATION'], float(c[0]), float(c[1])))        
