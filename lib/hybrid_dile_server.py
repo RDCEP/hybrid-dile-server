@@ -576,7 +576,7 @@ def select_dile_by_uri():
 
     """
     uri=request.args.get('uri')
-    
+    print uri
     if uri is not None:
         if uri.startswith("s3://.amazonaws.com/"):
 
