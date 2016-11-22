@@ -583,11 +583,15 @@ def select_dile_by_uri():
         if uri.startswith("s3://.amazonaws.com/"):
             
             path        = uri.replace(".amazonaws.com/","")
-            conn        = S3Connection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
             bname, kstr = path.split("/",1) # split the bname from the key string
-
+            
             print "BNAME: ", bname
             print "KEY: ", kstr
+
+            return "OK!"
+
+            """
+            conn        = S3Connection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 
             try:     
                 bucket  = conn.get_bucket(bname)
@@ -608,15 +612,15 @@ def select_dile_by_uri():
                     print "key: ", key
 
                     try:
-                        """
+                        
                         key.open_read()                         # opens the file
                         headers = dict(key.resp.getheaders())   # request the headers
                         return Response(key, headers=headers)   # return a response
-                        """                            
+                                                    
                     except S3ResponseError as e:
                         return Response(e.body, status=e.status, headers=key.resp.getheaders())
                 
-                """
+                ""
                 -- outside boto approach --
 
                 response = make_response(uri)
