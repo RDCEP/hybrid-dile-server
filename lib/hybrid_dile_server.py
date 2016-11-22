@@ -566,7 +566,6 @@ def discovery_dile_by_bbox(minLon,minLat,maxLon,maxLat):
 
 
 @app.route('/select/dile')
-@jsonp
 def select_dile_by_uri():
     """Download a dile given a uri.
 
@@ -589,43 +588,5 @@ def select_dile_by_uri():
             print "KEY: ", kstr
 
             return "OK!"
-
-            """
-            conn        = S3Connection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-
-            try:     
-                bucket  = conn.get_bucket(bname)
-            except:
-                print "BUCKET NOT FOUND"
-                return str("ERROR: bucket "+bname+" not found")
-            else:
-                print "BUCKET CONNECTED"
-                try:
-                    key = bucket.get_key(kstr)
-                except:
-                    print "KEY NOT FOUND"
-                    return str("ERROR: key "+kstr+"not found")
-                else:
-                    print "STATUS: "
-                    print "bname: ", bname
-                    print "key_str: ", kstr
-                    print "key: ", key
-
-                    try:
-                        
-                        key.open_read()                         # opens the file
-                        headers = dict(key.resp.getheaders())   # request the headers
-                        return Response(key, headers=headers)   # return a response
-                                                    
-                    except S3ResponseError as e:
-                        return Response(e.body, status=e.status, headers=key.resp.getheaders())
-                
-                ""
-                -- outside boto approach --
-
-                response = make_response(uri)
-                response.headers['Content-Type'] = 'application/x-netcdf'
-                response.headers['Content-Disposition'] = 'attachment; filename=dile.nc4'
-                return response
-                
-                """
+    else:
+            return "NO URI FOUND"
