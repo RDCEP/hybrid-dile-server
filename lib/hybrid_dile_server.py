@@ -39,6 +39,7 @@ from functools import update_wrapper
 
 from boto.s3.connection import S3Connection
 from boto.s3.connection import Location
+from boto.exception     import S3ResponseError
 
 AWS_ACCESS_KEY_ID=""
 AWS_SECRET_ACCESS_KEY=""
@@ -122,6 +123,7 @@ app.config.update(dict(
     SECRET_KEY       = 'development key',
     USERNAME         = 'admin',
     PASSWORD         = 'default',
+    BUCKET           = ''
     LOCATION         = 'loc.geometry',
     TIME             = 'time',
     LIMIT            = 100 
@@ -351,7 +353,7 @@ def index():
     }
 
     my_path=os.path.abspath(inspect.getfile(inspect.currentframe()))
-    print "my_path:"+my_path
+
     with open(my_path) as f:
         add=False
         action=None
@@ -577,22 +579,37 @@ def select_dile_by_uri():
 
     """
     uri=request.args.get('uri')
+    
     if uri is not None:
-        if uri.startswith("s3://"):
-            uri  = uri.replace("s3://","")
-            conn = S3Connection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-            try:
-                mybucket = conn.get_bucket(uri)
-                response = make_response(bucket)
+        
+        if uri.startswith("s3://.amazonaws.com/"):
+            
+            path        = uri.replace(".amazonaws.com/","")
+            conn        = S3Connection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+            bname, kstr = path.split("/",1) # split the bname from the key string
+
+            try:     
+                bucket  = conn.get_bucket(bname)
+            except:
+                return str("ERROR: bucket "+bname+" not found")
+            else:
+                try:
+                    key = bucket.get_key(kstr)
+                except:
+                    return str("ERROR: key "+kstr+"not found")
+                else:
+                    try:
+                        key.open_read()                         # opens the file
+                        headers = dict(key.resp.getheaders())   # request the headers
+                        return Response(key, headers=headers)   # return a response                        
+                    except S3ResponseError as e:
+                        return flask.Response(e.body, status=e.status, headers=key.resp.getheaders())
+                """
+                -- outside boto approach --
+
+                response = make_response(uri)
                 response.headers['Content-Type'] = 'application/x-netcdf'
                 response.headers['Content-Disposition'] = 'attachment; filename=dile.nc4'
                 return response
-            except:
-                pass
-        abort(404)
-    abort(400)
-
-
-@app.route("/test")
-def test():
-    return "Hey, that link was a test!"
+                
+                """
