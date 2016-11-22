@@ -589,11 +589,14 @@ def select_dile_by_uri():
             try:     
                 bucket  = conn.get_bucket(bname)
             except:
+                print "BUCKET NOT FOUND"
                 return str("ERROR: bucket "+bname+" not found")
             else:
+                print "BUCKET CONNECTED"
                 try:
                     key = bucket.get_key(kstr)
                 except:
+                    print "KEY NOT FOUND"
                     return str("ERROR: key "+kstr+"not found")
                 else:
                     print "STATUS: "
