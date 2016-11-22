@@ -123,7 +123,6 @@ app.config.update(dict(
     SECRET_KEY       = 'development key',
     USERNAME         = 'admin',
     PASSWORD         = 'default',
-    BUCKET           = ''
     LOCATION         = 'loc.geometry',
     TIME             = 'time',
     LIMIT            = 100 
