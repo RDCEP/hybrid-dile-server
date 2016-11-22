@@ -586,6 +586,9 @@ def select_dile_by_uri():
             conn        = S3Connection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
             bname, kstr = path.split("/",1) # split the bname from the key string
 
+            print "BNAME: ", bname
+            print "KEY: ", kstr
+
             try:     
                 bucket  = conn.get_bucket(bname)
             except:
