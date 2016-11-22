@@ -576,11 +576,10 @@ def select_dile_by_uri():
 
     """
     uri=request.args.get('uri')
-    print uri
-    if uri is not None:
-        if uri.startswith("s3://.amazonaws.com/"):
 
-            path        = uri.replace(".amazonaws.com/","")
+    if uri is not None:
+        if uri.startswith("http://s3.amazonaws.com/"):
+            path        = uri.replace("http://s3.amazonaws.com/","")
             bname, kstr = path.split("/",1) # split the bname from the key string
             
             print "BNAME: ", bname
