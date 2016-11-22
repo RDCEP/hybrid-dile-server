@@ -596,10 +596,10 @@ def select_dile_by_uri():
                     print "KEY NOT FOUND"
                     return str("ERROR: key "+kstr+"not found")
                 else:
-                    try:
-                        
+                    try: 
                         key.open_read()                         # opens the file
                         headers = dict(key.resp.getheaders())   # request the headers
+                        print headers
                         return Response(key, headers=headers)   # return a response                                  
                     except S3ResponseError as e:
                         return Response(e.body, status=e.status, headers=key.resp.getheaders())            
