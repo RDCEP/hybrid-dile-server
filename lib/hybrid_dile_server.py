@@ -597,12 +597,18 @@ def select_dile_by_uri():
                 except:
                     return str("ERROR: key "+kstr+"not found")
                 else:
+                    print "STATUS: "
+                    print "bname: ", bname
+                    print "key_str: ", kstr
+                    print "key: ", key
+
                     try:
                         key.open_read()                         # opens the file
                         headers = dict(key.resp.getheaders())   # request the headers
                         return Response(key, headers=headers)   # return a response                        
                     except S3ResponseError as e:
-                        return flask.Response(e.body, status=e.status, headers=key.resp.getheaders())
+                        return Response(e.body, status=e.status, headers=key.resp.getheaders())
+                
                 """
                 -- outside boto approach --
 
