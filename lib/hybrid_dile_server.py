@@ -413,11 +413,11 @@ def discovery_dile_by_feature():
 
     """Discovery the diles given a Feature (Point or Polygon)
  
-    :param:feat -- json feature
-    :param:dim  -- json document
-    :param:var  -- single or multiple string variables' names  
-    :example:/discovery/dile/by/feature?feat={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
-    :returns:geojson -- return a feature collection with the selected diles.
+    :param: feat -- json feature
+    :param: dim  -- json document
+    :param: var  -- single or multiple string variables' names  
+    :example: /discovery/dile/by/feature?feat={'geometry'%3A+{'type'%3A+'Point'%2C+'coordinates'%3A+[-90%2C+42.293564192170095]}%2C+'type'%3A+'Feature'%2C+'properties'%3A+{}}
+    :returns: geojson -- return a feature collection with the selected diles.
     -------------------------------------------------------------------------------------------
     """
 
