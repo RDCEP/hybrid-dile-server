@@ -589,4 +589,4 @@ def select_dile_by_uri():
 
             return "OK!"
     else:
-            return "NO URI FOUND"
+            return jsonify("NO URI FOUND")
