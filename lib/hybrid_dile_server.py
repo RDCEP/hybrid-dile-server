@@ -604,7 +604,9 @@ def select_dile_by_uri():
                         print headers
                         print "--------------------"
                         print "--------------------"
-                        print jsonify(key)
+                        print "key: ", key
+                        print "key.name: ", key.name
+                        print "key.meta: ", key.metadata
                         print "--------------------"
                         return Response(key, headers=headers)   # return a response                                  
                     except S3ResponseError as e:
