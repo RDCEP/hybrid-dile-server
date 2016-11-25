@@ -602,6 +602,7 @@ def select_dile_by_uri():
                         key.open_read()                         # opens the file
                         headers = dict(key.resp.getheaders())   # request the headers
                         headers["filename"] = pathLeaf(key.name)
+                        headers["Content-Disposition"] = "inline"
                         return Response(key, headers=headers)   # return a response                                  
                     except S3ResponseError as e:
                         return Response(e.body, status=e.status, headers=key.resp.getheaders())            
