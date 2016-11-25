@@ -13,8 +13,9 @@ from hashlib  import md5
 from datetime import datetime
 from pymongo  import MongoClient
 
-from geojson  import Feature, Point, FeatureCollection
-from ast      import literal_eval
+from geojson    import Feature, Point, FeatureCollection
+from ast        import literal_eval
+from utils.misc import pathLeaf 
 
 from diles.dilefactory       import DileFactory
 from utils.querybuildermongo import QueryBuilderMongo
@@ -600,14 +601,7 @@ def select_dile_by_uri():
                     try: 
                         key.open_read()                         # opens the file
                         headers = dict(key.resp.getheaders())   # request the headers
-                        print "--------------------"
-                        print headers
-                        print "--------------------"
-                        print "--------------------"
-                        print "key: ", key
-                        print "key.name: ", key.name
-                        print "key.meta: ", key.metadata
-                        print "--------------------"
+                        print pathLeaf(key.name)
                         return Response(key, headers=headers)   # return a response                                  
                     except S3ResponseError as e:
                         return Response(e.body, status=e.status, headers=key.resp.getheaders())            
