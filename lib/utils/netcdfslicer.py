@@ -107,7 +107,10 @@ if __name__ == '__main__':
 	
 	timer = Chrono()
 	ncg   = NetcdfGeometry()
-	lpw   = 
+	lpw   = LukePathWalker()
+
+	mydir = "/sdiles/ubuntu/sdiles"
+	myext = ["nc"] 
 
 	paths = []
 	for file in lpw.getDirectoryContent(mydir):
