@@ -7,6 +7,7 @@ from numpy					import ndindex
 from numpy.ma 				import MaskedArray
 from time 					import time, strftime
 from chrono 				import Chrono
+from lukepathwalker 		import LukePathWalker
 
 class NetcdfSlicer(object):
 	
@@ -106,9 +107,14 @@ if __name__ == '__main__':
 	
 	timer = Chrono()
 	ncg   = NetcdfGeometry()
-	path  = "/sdiles/ubuntu/sdiles/sdile_tasmax_2_0_1.nc"
-	fname = pathLeaf(path,False)
+	lpw   = 
 
+	paths = []
+	for file in lpw.getDirectoryContent(mydir):
+		if lpw.checkExtention(myext, file):
+			paths.append(file)
+
+	'''
 	print "computing md5 for ", fname, "..."
 	timer.start()
 	md5   = getMD5(path)
@@ -129,4 +135,9 @@ if __name__ == '__main__':
 	timer.stop()
 	print chr(27) + "[2J" #escape sequence
 	print ndiles, "created. task completed in: ", timer.formatted()
+	'''
+
+	print "len = ", len(paths)
+	if len(paths) != 0:
+		print paths[0]
 
