@@ -117,6 +117,33 @@ if __name__ == '__main__':
 		if lpw.checkExtention(myext, file):
 			paths.append(file)
 
+
+	for i in range(len(paths)):
+		
+		name = pathLeaf(paths[i])
+		
+		timer.start()
+		md5 = getMD5(paths[i])
+		timer.stop()
+
+		print i, ") md5 for ",name, " computed in: ", timer.formatted()
+		
+		src = ncOpen(paths[i], mode='r')
+		
+		bb  = ncg.getBoundingBox(src['lat'],src['lon'])
+		z 	= ncg.getZoomLevel(scr['lat'],src['lon'])
+
+		ncs = NetcdfSlicer(src)
+
+		timer.reset()
+
+		timer.start()
+		ndiles = ncs.createDiles("/sdiles/ubuntu/diles/"+md5+"/"+name,bb,int(z))
+		timer.stop()
+
+		exit()
+
+
 	'''
 	print "computing md5 for ", fname, "..."
 	timer.start()
@@ -140,7 +167,5 @@ if __name__ == '__main__':
 	print ndiles, "created. task completed in: ", timer.formatted()
 	'''
 
-	print "len = ", len(paths)
-	if len(paths) != 0:
-		print paths[0]
+
 
