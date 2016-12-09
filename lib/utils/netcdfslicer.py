@@ -118,15 +118,14 @@ if __name__ == '__main__':
 			paths.append(file)
 
 
-	for i in range(len(paths)):
+	for i in range(0,10):
 		
-		name = pathLeaf(paths[i])
 		
 		timer.start()
 		md5 = getMD5(paths[i])
 		timer.stop()
 
-		print i, ") md5 for ",name, " computed in: ", timer.formatted()
+		print i, ") md5 for ",pathLeaf(paths[i],ext=True), " computed in: ", timer.formatted()
 		
 		src = ncOpen(paths[i], mode='r')
 		
@@ -138,9 +137,9 @@ if __name__ == '__main__':
 		timer.reset()
 
 		timer.start()
-		ndiles = ncs.createDiles("/sdiles/ubuntu/diles/"+md5+"/"+name,bb,int(z))
+		ndiles = ncs.createDiles("/sdiles/ubuntu/diles/"+md5+"/"+pathLeaf(paths[i],ext=False),bb,int(z))
 		timer.stop()
-
+		print ndiles, " created. task completed in: ", timer.formatted()
 		src.close()
 
 		exit()
