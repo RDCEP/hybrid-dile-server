@@ -131,7 +131,7 @@ if __name__ == '__main__':
 		src = ncOpen(paths[i], mode='r')
 		
 		bb  = ncg.getBoundingBox(src['lat'],src['lon'])
-		z 	= ncg.getZoomLevel(scr['lat'],src['lon'])
+		z 	= ncg.getZoomLevel(src['lat'],src['lon'])
 
 		ncs = NetcdfSlicer(src)
 
@@ -140,6 +140,8 @@ if __name__ == '__main__':
 		timer.start()
 		ndiles = ncs.createDiles("/sdiles/ubuntu/diles/"+md5+"/"+name,bb,int(z))
 		timer.stop()
+
+		src.close()
 
 		exit()
 
