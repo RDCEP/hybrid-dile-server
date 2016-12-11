@@ -119,7 +119,6 @@ if __name__ == '__main__':
 	bucketname 		= 'edu-uchicago-rdcep-diles'
 	
 	src			= '/sdiles/ubuntu/diles'
-	folder 		= '/6868331851f3cf7e31eeee31bdd2e6d6'
 	extensions 	= ['nc','nc4']
 	
 	timer 		= Chrono()	
@@ -132,17 +131,16 @@ if __name__ == '__main__':
 
 	print paths[0]
 
-	'''
+	
 	dup = DileUploader(idkeypath, secretkeypath)
 
 	dup.onConnect()
 
 	dup.selectBucket(bucketname)
-	
-	timer.start()
-	ndocs = dup.onUpload(extensions,src,folder,'')
-	timer.stop()
-	
-	print chr(27) + "[2J" #escape sequence
-	print ndocs, "documents ingested. task completed in: ", timer.formatted()
-	'''
+	for folder in paths:
+		timer.start()
+		ndocs = dup.onUpload(extensions,'',folder,'')
+		timer.stop()
+		
+		print ndocs, "documents ingested. task completed in: ", timer.formatted()
+		timer.reset()
