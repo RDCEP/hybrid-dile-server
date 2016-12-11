@@ -118,7 +118,7 @@ if __name__ == '__main__':
 			paths.append(file)
 
 
-	for i in range(0,10):
+	for i in range(1,10):
 		
 		
 		timer.start()
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 		print ndiles, " created. task completed in: ", timer.formatted()
 		src.close()
 
-		exit()
+		
 
 
 	'''
