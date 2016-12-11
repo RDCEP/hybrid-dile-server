@@ -121,7 +121,7 @@ if __name__ == '__main__':
 			paths.append(file)
 
 
-	for i in range(10,30):
+	for i in range(30,50):
 		
 		
 		timer.start()
