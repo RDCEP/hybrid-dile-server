@@ -122,6 +122,14 @@ if __name__ == '__main__':
 	extensions 	= ['nc','nc4']
 	timer 		= Chrono()	
 
+	paths = []
+	for file in lpw.getDirectoryContent(src):
+		if lpw.checkExtention(extensions, file):
+			paths.append(file)
+
+	print paths[0]
+
+	'''
 	dup = DileUploader(idkeypath, secretkeypath)
 
 	dup.onConnect()
@@ -134,3 +142,4 @@ if __name__ == '__main__':
 	
 	print chr(27) + "[2J" #escape sequence
 	print ndocs, "documents ingested. task completed in: ", timer.formatted()
+	'''
