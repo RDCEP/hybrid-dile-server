@@ -40,7 +40,7 @@ class NetcdfSlicer(object):
 				iter_len += reduce(lambda x, y: x*y, var.shape[:-2])*len(diles)
 			else:
 				iter_len += len(diles)
-				
+
 		# x,y,z indices for printing purposes
 		x = 0
 		for var in variables:
@@ -121,7 +121,7 @@ if __name__ == '__main__':
 			paths.append(file)
 
 
-	for i in range(6,10):
+	for i in range(10,30):
 		
 		
 		timer.start()
