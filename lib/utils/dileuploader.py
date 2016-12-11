@@ -5,7 +5,7 @@ import os.path
 import sys
 
 from lukepathwalker import LukePathWalker
-from misc 	    import pathLeaf, printProgress
+from misc 	    	import pathLeaf, printProgress
 from chrono 	    import Chrono
 
 class DileUploader(object):
@@ -114,13 +114,16 @@ class DileUploader(object):
 
 if __name__ == '__main__':
 
-	idkeypath 	= '/home/ubuntu/.s3/AWS_ACCESS_KEY_ID'
+	idkeypath 		= '/home/ubuntu/.s3/AWS_ACCESS_KEY_ID'
 	secretkeypath 	= '/home/ubuntu/.s3/AWS_SECRET_ACCESS_KEY'
-	bucketname 	= 'edu-uchicago-rdcep-diles'
-	src		= '/sdiles/ubuntu/diles'
+	bucketname 		= 'edu-uchicago-rdcep-diles'
+	
+	src			= '/sdiles/ubuntu/diles'
 	folder 		= '/6868331851f3cf7e31eeee31bdd2e6d6'
 	extensions 	= ['nc','nc4']
+	
 	timer 		= Chrono()	
+	lpw 		= LukePathWalker()
 
 	paths = []
 	for file in lpw.getDirectoryContent(src):
