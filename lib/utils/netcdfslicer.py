@@ -36,9 +36,11 @@ class NetcdfSlicer(object):
 		# calculating the number of iterations required, for printing purposes
 		iter_len 	= 0
 		for var in variables:
-			print "shape: ", var.shape
-			iter_len += reduce(lambda x, y: x*y, var.shape[:-2])*len(diles)
-
+			if len(var.shape) > 2:
+				iter_len += reduce(lambda x, y: x*y, var.shape[:-2])*len(diles)
+			else:
+				iter_len += len(diles)
+				
 		# x,y,z indices for printing purposes
 		x = 0
 		for var in variables:
