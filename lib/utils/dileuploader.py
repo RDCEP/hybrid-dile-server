@@ -62,6 +62,13 @@ class DileUploader(object):
 		else:
 			print 'bucket fetched'
 
+
+	def countFolders(self, prefix = ''):
+
+		return self.bucket.list(prefix = prefix)
+
+
+
 	#ext is the list of extentions of the file to select 
 	#src is the source folder to traverse
 	#dst select or create a path tree in the bucket of choice
@@ -105,6 +112,8 @@ class DileUploader(object):
 				else:	
 					# uploads a file in its entirety
 					k.set_contents_from_filename(srcpath)
+			else:
+				print "document already ingested"
 
 			printProgress(n, len(files),"uploading on: "+self.bname, pathLeaf(fname))
 			n += 1
@@ -129,7 +138,6 @@ if __name__ == '__main__':
 		if lpw.checkExtention(extensions, file):
 			paths.append(file)
 
-	print paths[0]
 
 	
 	dup = DileUploader(idkeypath, secretkeypath)
@@ -137,6 +145,12 @@ if __name__ == '__main__':
 	dup.onConnect()
 
 	dup.selectBucket(bucketname)
+
+	fol  = dup.countFolders()
+
+	print fol[0]
+	
+	'''
 	for folder in paths:
 		timer.start()
 		ndocs = dup.onUpload(extensions,'',folder,'')
@@ -144,3 +158,4 @@ if __name__ == '__main__':
 		
 		print ndocs, "documents ingested. task completed in: ", timer.formatted()
 		timer.reset()
+	'''
