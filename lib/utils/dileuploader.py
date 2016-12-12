@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
 	for i in range(0,1):
 		timer.start()
-		ndocs = dup.onUpload(extensions,src,folder[i],'')
+		ndocs = dup.onUpload(extensions,src,folders[i],'')
 		timer.stop()
 		
 		print ndocs, "documents ingested. task completed in: ", timer.formatted()
