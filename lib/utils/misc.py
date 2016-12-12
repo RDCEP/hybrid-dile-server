@@ -21,7 +21,7 @@ def printProgress (iteration, total, prefix = '', suffix = '',ratio = True, last
 	percents		= round(100.00 * (iteration / float(total)), decimals)
 	bar 			= '#' * filledLength + '-' * (barLength - filledLength)
 
-	if last:  mode = "\r"
+	if last or iteration == total:  mode = "\r"
 	else:     mode = " "
 	if ratio: rat  = '['+str(iteration)+'/'+str(total)+']'
 	else:	  rat  = ''
