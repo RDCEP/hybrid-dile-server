@@ -2,6 +2,7 @@ import boto
 import boto.s3
 
 import os.path
+import os.listdir
 import sys
 
 from lukepathwalker import LukePathWalker
@@ -146,14 +147,25 @@ if __name__ == '__main__':
 
 	dup.selectBucket(bucketname)
 
-	fol  = dup.showFolders()
+	res  = dup.showFolders()
 
-	for item in fol:
-		print item.name
+	folders = []
+	for item in res:
+		 folders.append(item.name[:-1])
 
-	print "number of folders: ", len(fol)
 
 
+	print "number of folders: ", len(folders)
+
+	directories = listdir("/sdiles/ubuntu/diles")
+
+	print "number of direct: ", len(directories)
+
+	equals = set(folders) & set(directories)
+
+	print equals
+
+	print "number of equals: ", len(equals)
 	
 	'''
 	for folder in paths:
