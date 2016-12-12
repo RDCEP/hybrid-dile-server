@@ -157,7 +157,7 @@ if __name__ == '__main__':
 
 	print "number of folders: ", len(folders)
 
-	directories = listdir("/sdiles/ubuntu/diles")
+	directories = os.listdir("/sdiles/ubuntu/diles")
 
 	print "number of direct: ", len(directories)
 
