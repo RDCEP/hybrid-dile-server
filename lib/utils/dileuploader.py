@@ -141,6 +141,7 @@ if __name__ == '__main__':
 
 	folders = os.listdir(src)
 
+	print folders[0]
 
 	for i in range(0,1):
 		timer.start()
