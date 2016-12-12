@@ -1,8 +1,7 @@
 import boto
 import boto.s3
 
-import os.path
-import os.listdir
+import os
 import sys
 
 from lukepathwalker import LukePathWalker
