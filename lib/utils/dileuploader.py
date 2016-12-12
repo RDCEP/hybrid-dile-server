@@ -98,7 +98,7 @@ class DileUploader(object):
                         # it will be set as the destination path
                         k.key = dstpath
 
-			if not self.KeyExists(k):
+			if not self.keyExists(k):
 
 				# selection between single-part upload and multipart (in case is too big)
 				if fsize > self.MAX_SIZE:
