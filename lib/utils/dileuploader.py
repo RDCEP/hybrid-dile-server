@@ -148,7 +148,8 @@ if __name__ == '__main__':
 
 	fol  = dup.countFolders()
 
-	print fol[0]
+	for entries in fol:
+		print fol
 	
 	'''
 	for folder in paths:
