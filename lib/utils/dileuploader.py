@@ -127,7 +127,7 @@ if __name__ == '__main__':
 	secretkeypath 	= '/home/ubuntu/.s3/AWS_SECRET_ACCESS_KEY'
 	bucketname 		= 'edu-uchicago-rdcep-diles'
 	
-	src			= '/sdiles/ubuntu/diles'
+	src			= '/sdiles/ubuntu/diles/'
 	extensions 	= ['nc','nc4']
 	
 	timer 		= Chrono()	
