@@ -75,13 +75,17 @@ class DileUploader(object):
 	def onUpload(self, ext, src='',folder='', dst=''):
 
 		lpw = LukePathWalker()
-
+		
+		print "fetching files..."
 		files = []
 		for file in lpw.getDirectoryContent(src+folder):
 			if lpw.checkExtention(ext, file):
 				files.append(file)
+		print len(files)," files fetched. Uploading..."
 
-		n = 0 #for printing pourposes
+		n = 0 # number of iteration completed  for printing pourposes
+		m = 0 # number of files skipped
+
 		for fname in files:
 
 			srcpath = fname
@@ -113,12 +117,12 @@ class DileUploader(object):
 					# uploads a file in its entirety
 					k.set_contents_from_filename(srcpath)
 			else:
-				print "document already ingested"
+				m += 1
 
 			printProgress(n, len(files),"uploading on: "+self.bname, pathLeaf(fname))
 			n += 1
 		
-		return len(files)
+		return [n-m,m,n]
 
 
 if __name__ == '__main__':
@@ -141,13 +145,12 @@ if __name__ == '__main__':
 
 	folders = os.listdir(src)
 
-	print folders[0]
-
 	for i in range(0,1):
 		timer.start()
-		ndocs = dup.onUpload(extensions,src,folders[i],'')
+		done, skipped, total = dup.onUpload(extensions,src,folders[i],'')
 		timer.stop()
 		
-		print ndocs, "documents ingested. task completed in: ", timer.formatted()
+		print "[ ",done,"/",total," ] documents ingested, ",skipped," skipped." 
+		print "Task completed in: ", timer.formatted()
 		timer.reset()
 	
