@@ -63,9 +63,9 @@ class DileUploader(object):
 			print 'bucket fetched'
 
 
-	def countFolders(self, prefix = ''):
+	def showFolders(self, prefix = ''):
 
-		return self.bucket.list(prefix = prefix)
+		return list(self.bucket.list(prefix,"/"))
 
 
 
