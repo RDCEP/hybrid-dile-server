@@ -65,7 +65,7 @@ class DileUploader(object):
 
 	def showFolders(self, prefix = ''):
 
-		return list(self.bucket.list(prefix))
+		return list(self.bucket.list(prefix,'/'))
 
 
 
