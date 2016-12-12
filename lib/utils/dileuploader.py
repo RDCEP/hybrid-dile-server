@@ -149,7 +149,7 @@ if __name__ == '__main__':
 	fol  = dup.showFolders()
 
 	for entries in fol:
-		print fol
+		print fol.name
 	
 	'''
 	for folder in paths:
