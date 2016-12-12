@@ -65,7 +65,7 @@ class DileUploader(object):
 
 	def showFolders(self, prefix = ''):
 
-		return list(self.bucket.list(prefix,"/"))
+		return list(self.bucket.list(prefix))
 
 
 
@@ -148,8 +148,12 @@ if __name__ == '__main__':
 
 	fol  = dup.showFolders()
 
-	for entries in fol:
-		print entries.name
+	for item in fol:
+		print item.name
+
+	print "number of folders: ", len(fol)
+
+
 	
 	'''
 	for folder in paths:
