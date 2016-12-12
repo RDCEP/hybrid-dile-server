@@ -2,8 +2,8 @@ import boto
 import boto.s3
 from   misc import printProgress, pathLeaf
 
-idkeypath 		= '/home/sergio/.s3/AWS_ACCESS_KEY_ID'
-secretkeypath 	= '/home/sergio/.s3/AWS_SECRET_ACCESS_KEY'
+idkeypath 		= '/home/ubuntu/.s3/AWS_ACCESS_KEY_ID'
+secretkeypath 	= '/home/ubuntu/.s3/AWS_SECRET_ACCESS_KEY'
 bucketname 		= 'edu-uchicago-rdcep-diles'
 folder          = ''
 
