@@ -27,8 +27,6 @@ bucket = conn.get_bucket(bucketname)
 
 keys = bucket.list(prefix = folder)
 
-i = 0
+
 for key in keys:
 	key.delete()
-	i = i+1
-	print i, "\r"
