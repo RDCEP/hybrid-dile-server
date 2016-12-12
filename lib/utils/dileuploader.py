@@ -138,7 +138,7 @@ if __name__ == '__main__':
 	for file in lpw.getDirectoryContent(src):
 		if lpw.checkExtention(extensions, file):
 			paths.append(file)
-			exit()
+			break
 	
 	print paths
 
