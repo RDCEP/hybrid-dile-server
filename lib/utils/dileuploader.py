@@ -132,17 +132,7 @@ if __name__ == '__main__':
 	
 	timer 		= Chrono()	
 	lpw 		= LukePathWalker()
-
 	
-	paths = []
-	for file in lpw.getDirectoryContent(src):
-		if lpw.checkExtention(extensions, file):
-			paths.append(file)
-			break
-	
-	print paths
-
-	'''
 	
 	dup = DileUploader(idkeypath, secretkeypath)
 
