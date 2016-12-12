@@ -140,7 +140,7 @@ if __name__ == '__main__':
 			paths.append(file)
 			exit()
 	
-	print paths[0]
+	print paths
 
 	'''
 	
