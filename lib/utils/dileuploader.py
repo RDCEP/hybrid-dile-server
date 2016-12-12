@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
 	dup.selectBucket(bucketname)
 
-	fol  = dup.countFolders()
+	fol  = dup.showFolders()
 
 	for entries in fol:
 		print fol
