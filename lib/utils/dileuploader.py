@@ -45,9 +45,9 @@ class DileUploader(object):
 	def keyExists(self,path):
 		
 		# create a key to use as destination
-                k = boto.s3.key.Key(self.bucket)
-                # it will be set as the destination path
-                k.key = path
+		k = boto.s3.key.Key(self.bucket)
+		# it will be set as the destination path
+		k.key = path
 		
 		return k.exists()
 
@@ -98,7 +98,7 @@ class DileUploader(object):
                         # it will be set as the destination path
                         k.key = dstpath
 
-			if not self.KeyExists():
+			if not self.KeyExists(k):
 
 				# selection between single-part upload and multipart (in case is too big)
 				if fsize > self.MAX_SIZE:
