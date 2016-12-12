@@ -133,11 +133,15 @@ if __name__ == '__main__':
 	timer 		= Chrono()	
 	lpw 		= LukePathWalker()
 
-	'''
+	
 	paths = []
 	for file in lpw.getDirectoryContent(src):
 		if lpw.checkExtention(extensions, file):
 			paths.append(file)
+			exit()
+	
+	print paths[0]
+
 	'''
 	
 	dup = DileUploader(idkeypath, secretkeypath)
@@ -148,30 +152,9 @@ if __name__ == '__main__':
 
 	res  = dup.showFolders()
 
-	folders = []
-	for item in res:
-		 folders.append(item.name[:-1])
-
-
-
-	print "number of folders: ", len(folders)
-
-	directories = os.listdir("/sdiles/ubuntu/diles")
-
-	print "number of direct: ", len(directories)
-
-	equals = set(folders) & set(directories)
-
-	print equals
-
-	print "number of equals: ", len(equals)
+	timer.start()
+	ndocs = dup.onUpload(extensions,src,'','')
+	timer.stop()
 	
-	'''
-	for folder in paths:
-		timer.start()
-		ndocs = dup.onUpload(extensions,'',folder,'')
-		timer.stop()
-		
-		print ndocs, "documents ingested. task completed in: ", timer.formatted()
-		timer.reset()
+	print ndocs, "documents ingested. task completed in: ", timer.formatted()
 	'''
