@@ -131,20 +131,22 @@ if __name__ == '__main__':
 	extensions 	= ['nc','nc4']
 	
 	timer 		= Chrono()	
-	lpw 		= LukePathWalker()
-	
-	
+
 	dup = DileUploader(idkeypath, secretkeypath)
 
 	dup.onConnect()
 
 	dup.selectBucket(bucketname)
 
-	res  = dup.showFolders()
 
-	timer.start()
-	ndocs = dup.onUpload(extensions,src,'','')
-	timer.stop()
+	folders = os.listdir(src)
+
+
+	for i in range(0,1):
+		timer.start()
+		ndocs = dup.onUpload(extensions,src,folder[i],'')
+		timer.stop()
+		
+		print ndocs, "documents ingested. task completed in: ", timer.formatted()
+		timer.reset()
 	
-	print ndocs, "documents ingested. task completed in: ", timer.formatted()
-	'''
