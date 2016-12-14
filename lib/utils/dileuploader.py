@@ -145,7 +145,7 @@ if __name__ == '__main__':
 
 	folders = os.listdir(src)
 
-	for i in range(1, len(folders)):
+	for i in range(0, len(folders)):
 		timer.start()
 		done, skipped, total = dup.onUpload(extensions,src,folders[i],'')
 		timer.stop()
