@@ -145,6 +145,12 @@ if __name__ == '__main__':
 
 	folders = os.listdir(src)
 
+
+	print "len folders: ", len(folders)
+	print "len bucket: ",  len(dup.showFolders())
+
+
+	'''
 	for i in range(0, len(folders)):
 		timer.start()
 		done, skipped, total = dup.onUpload(extensions,src,folders[i],'')
@@ -153,4 +159,4 @@ if __name__ == '__main__':
 		print "[ ",done,"/",total," ] documents ingested, ",skipped," skipped." 
 		print "Task completed in: ", timer.formatted()
 		timer.reset()
-	
+	'''	
